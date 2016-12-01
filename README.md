@@ -1,0 +1,2 @@
+# greedy
+Greedy algorithm project
