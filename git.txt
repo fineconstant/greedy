@@ -1,0 +1,10 @@
+feature
+new-feature
+new-section
+new-page
+update
+upgrade
+fix
+amend
+refactor
+remove
