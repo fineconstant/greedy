@@ -1,0 +1,23 @@
+# https://hub.docker.com/r/singularities/spark/
+
+version: "2"
+
+services:
+  master:
+#   image: singularities/spark:2.0
+    image: singularities/spark
+    command: start-spark master
+    hostname: master
+    ports:
+      - "6066:6066"   # Spark REST
+      - "7070:7070"   # Spark Master
+      - "8080:8080"   # Spark Web
+      - "50070:50070" # Hadoop NameNode
+  worker:
+    image: singularities/spark
+    command: start-spark worker master
+    environment:
+      SPARK_WORKER_CORES: 2
+      SPARK_WORKER_MEMORY: 4g
+    links:
+      - master

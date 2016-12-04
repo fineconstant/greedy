@@ -22,27 +22,64 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
-		<scala.version>2.12.0</scala.version>
+
 		<scala.plugin.version>2.15.2</scala.plugin.version>
+		<scala.main.version>2.11</scala.main.version>
+		<scala.version>2.11.8</scala.version>
 		<scalatest.version>3.0.1</scalatest.version>
+
+		<spark.version>2.0.2</spark.version>
+
 		<docker.maven.version>0.4.11</docker.maven.version>
 		<docker.image.prefix>kduda</docker.image.prefix>
 	</properties>
 
 	<dependencies>
-		<!--spring dependencies-->
+		<!--spring-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 		<!--<dependency>-->
 		<!--<groupId>org.springframework.boot</groupId>-->
-		<!--<artifactId>spring-boot-starter-data-cassandra</artifactId>-->
-		<!--</dependency>-->
-		<!--<dependency>-->
-		<!--<groupId>org.springframework.boot</groupId>-->
 		<!--<artifactId>spring-boot-starter-security</artifactId>-->
 		<!--</dependency>-->
+
+		<!--spark-->
+		<dependency>
+			<groupId>org.apache.spark</groupId>
+			<artifactId>spark-core_${scala.main.version}</artifactId>
+			<version>${spark.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-log4j12</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.spark</groupId>
+			<artifactId>spark-sql_${scala.main.version}</artifactId>
+			<version>${spark.version}</version>
+		</dependency>
+
+		<!--scala-->
+		<dependency>
+			<groupId>org.scala-lang</groupId>
+			<artifactId>scala-library</artifactId>
+			<version>${scala.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.scalactic</groupId>
+			<artifactId>scalactic_${scala.main.version}</artifactId>
+			<version>${scalatest.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.scalatest</groupId>
+			<artifactId>scalatest_${scala.main.version}</artifactId>
+			<version>${scalatest.version}</version>
+			<scope>test</scope>
+		</dependency>
 
 		<!--dev-->
 		<dependency>
@@ -55,25 +92,8 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-
-		<!--scala-->
-		<dependency>
-			<groupId>org.scala-lang</groupId>
-			<artifactId>scala-library</artifactId>
-			<version>${scala.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.scalactic</groupId>
-			<artifactId>scalactic_2.12</artifactId>
-			<version>${scalatest.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.scalatest</groupId>
-			<artifactId>scalatest_2.12</artifactId>
-			<version>${scalatest.version}</version>
-			<scope>test</scope>
-		</dependency>
 	</dependencies>
+
 
 	<build>
 		<plugins>
