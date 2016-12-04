@@ -1,5 +1,8 @@
 # https://hub.docker.com/r/singularities/spark/
 
+# TODO: link web with master
+# TODO: test spark master from web
+
 version: "2"
 
 services:
