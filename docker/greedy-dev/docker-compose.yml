@@ -10,7 +10,7 @@ services:
     ports:
       - "6066:6066"   # Spark REST
       - "7070:7070"   # Spark Master
-      - "8080:8080"   # Spark Web
+      - "8081:8080"   # Spark Web to 8081
       - "50070:50070" # Hadoop NameNode
   worker:
     image: singularities/spark

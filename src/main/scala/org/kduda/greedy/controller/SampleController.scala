@@ -7,4 +7,9 @@ class SampleController {
 
   @GetMapping(Array("/"))
   def defaultMapping = "scala default mapping"
+
+  @GetMapping(Array("/test"))
+  def test(): Boolean = {
+    false
+  }
 }

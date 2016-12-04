@@ -1,0 +1,11 @@
+spring:
+  main:
+    banner-mode: off
+
+---
+
+spring:
+  profiles: dev
+  devtools:
+    restart:
+      additional-paths: src/main/scala
