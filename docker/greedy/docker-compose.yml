@@ -1,6 +1,5 @@
 # https://hub.docker.com/r/singularities/spark/
 
-# TODO: link web with master
 # TODO: test spark master from web
 
 version: "2"
@@ -8,6 +7,10 @@ version: "2"
 services:
   web:
     image: kduda/greedy
+    links:
+      - master:spark_master
+    depends_on:
+      - master
     ports:
       - 8080:8080
     environment:

@@ -4,7 +4,7 @@ version: "2"
 
 services:
   namenode:
-#    image: singularities/hadoop:2.7
+#   image: singularities/hadoop:2.7
     image: singularities/hadoop
     command: start-hadoop namenode
     hostname: namenode
