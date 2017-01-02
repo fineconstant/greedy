@@ -1,6 +1,11 @@
 spring:
   main:
     banner-mode: off
+  thymeleaf:
+    cache: false
+endpoints:
+  actuator:
+    enabled: false
 
 ---
 
@@ -9,3 +14,7 @@ spring:
   devtools:
     restart:
       additional-paths: src/main/scala
+endpoints:
+  shutdown:
+    enabled: true
+    sensitive: false

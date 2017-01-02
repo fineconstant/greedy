@@ -7,10 +7,9 @@ import org.springframework.web.bind.annotation.{RequestMapping, RequestParam}
 @Controller
 class GreetingController {
 
-    @RequestMapping(Array("greeting"))
-    def greeting(@RequestParam(value = "name", required = false, defaultValue = "World") name: String, model: Model): String = {
-      model.addAttribute(name)
-      Console.println(name)
-      "greeting"
-    }
+  @RequestMapping(Array("greeting"))
+  def greeting(@RequestParam(value = "name", required = false, defaultValue = "World") name: String, model: Model): String = {
+    model.addAttribute("name", name)
+    "greeting"
+  }
 }
