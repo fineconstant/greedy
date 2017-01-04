@@ -1,4 +1,4 @@
-# greedy
+# org.kduda.greedy
 ##Greedy algorithm project
 
 ###Development
@@ -8,5 +8,6 @@
   * Restart application
 
 ###To do:
+* [Lombok](https://projectlombok.org/features/index.html) `val` with IntelliJ
 * Upgrade Spark to Scala 2.12
 * Upgrade Scala to 2.12

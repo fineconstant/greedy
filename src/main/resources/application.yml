@@ -3,6 +3,10 @@ spring:
     banner-mode: off
   thymeleaf:
     cache: false
+  http:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 5MB
 endpoints:
   actuator:
     enabled: false
