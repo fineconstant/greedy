@@ -1,4 +1,4 @@
-package org.kduda.greedy.service.storage;
+package org.kduda.greedy.service;
 
 import org.kduda.greedy.exception.StorageException;
 import org.kduda.greedy.exception.StorageFileNotFoundException;

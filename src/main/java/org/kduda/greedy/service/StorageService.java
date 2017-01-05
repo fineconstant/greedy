@@ -1,4 +1,4 @@
-package org.kduda.greedy.service.storage;
+package org.kduda.greedy.service;
 
 import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;

@@ -1,7 +1,7 @@
 package org.kduda.greedy.controller;
 
 import org.kduda.greedy.exception.StorageFileNotFoundException;
-import org.kduda.greedy.service.storage.StorageService;
+import org.kduda.greedy.service.StorageService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -17,22 +17,22 @@ import java.io.IOException;
 import java.util.stream.Collectors;
 
 @Controller
-public class FileStorageController {
+public class FileUploadController {
 
-	//TODO: lombok: private val storageService;
 	private final StorageService storageService;
 
-	public FileStorageController(@Qualifier("mongoStorageService") StorageService storageService) {
+	public FileUploadController(@Qualifier("mongoGridFsStorageService") StorageService storageService) {
 		this.storageService = storageService;
 	}
 
 	@GetMapping("files")
-	public String listUploadedFiles(Model model) throws IOException {
+	public String listFiles(Model model) throws IOException {
+// TODO: get filenams of information-system files
 
 		model.addAttribute("files", storageService
 			.loadAll()
 			.map(path -> MvcUriComponentsBuilder
-				.fromMethodName(FileStorageController.class, "serveFile", path.getFileName().toString())
+				.fromMethodName(FileUploadController.class, "serveFile", path.getFileName().toString())
 				.build().toString())
 			.collect(Collectors.toList()));
 
@@ -48,6 +48,7 @@ public class FileStorageController {
 			.ok()
 			.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"")
 			.body(file);
+
 	}
 
 	@PostMapping("files")

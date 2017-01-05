@@ -2,7 +2,7 @@ package org.kduda.greedy.storage;
 
 import org.junit.Test;
 import org.kduda.greedy.SpringIntegrationTest;
-import org.kduda.greedy.service.storage.StorageService;
+import org.kduda.greedy.service.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.embedded.LocalServerPort;
@@ -27,7 +27,7 @@ public class FileStorageIntegrationTests extends SpringIntegrationTest {
 	private TestRestTemplate restTemplate;
 
 	@MockBean
-	@Qualifier("mongoStorageService")
+	@Qualifier("mongoGridFsStorageService")
 	private StorageService storageService;
 
 	@LocalServerPort

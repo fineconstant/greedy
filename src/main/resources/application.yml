@@ -1,24 +1,34 @@
 spring:
-  main:
-    banner-mode: off
   thymeleaf:
     cache: false
   http:
     multipart:
       max-file-size: 5MB
       max-request-size: 5MB
-endpoints:
+  data:
+    mongodb:
+      database: greedy
+      grid-fs-database: greedy
+endpoints: # disable actuator in production
   actuator:
     enabled: false
 
 ---
 
 spring:
+  profiles: container
+  data: # connection to linked container
+    mongodb:
+      uri: mongodb://greedy-mongo
+
+---
+
+spring:
   profiles: dev
-  devtools:
+  devtools: # additional path for watching
     restart:
       additional-paths: src/main/scala
-endpoints:
+endpoints: # enable actuator and shutdown endpoint
   shutdown:
     enabled: true
     sensitive: false

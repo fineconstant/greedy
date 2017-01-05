@@ -29,6 +29,8 @@
 		<docker.maven.version>0.4.11</docker.maven.version>
 		<docker.image.prefix>kduda</docker.image.prefix>
 
+		<lombok.version>1.16.12</lombok.version>
+
 		<scala.plugin.version>2.15.2</scala.plugin.version>
 		<scala.main.version>2.11</scala.main.version>
 		<scala.version>2.11.8</scala.version>
@@ -44,6 +46,14 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-mongodb</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-rest</artifactId>
 		</dependency>
 		<!--<dependency>-->
 		<!--<groupId>org.springframework.boot</groupId>-->
@@ -93,11 +103,10 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<version>1.16.12</version>
-			<!--<scope>provided</scope>-->
+			<version>${lombok.version}</version>
 		</dependency>
 
-		<!--spring-->
+		<!--spark-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-configuration-processor</artifactId>

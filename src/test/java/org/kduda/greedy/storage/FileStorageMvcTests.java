@@ -2,17 +2,14 @@ package org.kduda.greedy.storage;
 
 import org.kduda.greedy.SpringTest;
 import org.kduda.greedy.exception.StorageFileNotFoundException;
-import org.kduda.greedy.service.storage.StorageService;
+import org.kduda.greedy.service.StorageService;
 import org.hamcrest.Matchers;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.nio.file.Paths;
@@ -31,7 +28,7 @@ public class FileStorageMvcTests extends SpringTest {
 	private MockMvc mvc;
 
 	@MockBean
-	@Qualifier("mongoStorageService")
+	@Qualifier("mongoGridFsStorageService")
 	private StorageService storageService;
 
 	@Test

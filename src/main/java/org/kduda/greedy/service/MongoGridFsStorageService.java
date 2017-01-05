@@ -1,4 +1,4 @@
-package org.kduda.greedy.service.storage;
+package org.kduda.greedy.service;
 
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
@@ -9,16 +9,14 @@ import java.nio.file.Paths;
 import java.util.stream.Stream;
 
 @Service
-public class MongoStorageService implements StorageService {
+public class MongoGridFsStorageService implements StorageService {
 
 	@Override
 	public void init() {
-		System.out.println("mongo init");
 	}
 
 	@Override
 	public void store(MultipartFile file) {
-
 	}
 
 	@Override
