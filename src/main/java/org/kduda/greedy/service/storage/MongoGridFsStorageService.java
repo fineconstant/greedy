@@ -1,6 +1,7 @@
 package org.kduda.greedy.service.storage;
 
 import com.mongodb.MongoException;
+import com.mongodb.gridfs.GridFSDBFile;
 import com.mongodb.gridfs.GridFSFile;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -48,27 +49,45 @@ public class MongoGridFsStorageService implements FileStorageService {
 	}
 
 	@Override
-	public GridFSFile findFilesByName(@NonNull String name) {
-		return operations.findOne(query(whereFilename().is(name)));
+	public Optional<GridFSDBFile> findFilesByName(@NonNull String name) {
+		return Optional.ofNullable(
+			operations.findOne(
+				query(
+					whereFilename().is(name)
+				)));
+	}
+
+
+	@Override
+	public Optional<GridFSDBFile> findFilesById(@NonNull String id) {
+		return Optional.ofNullable(
+			operations.findOne(
+				query(
+					whereMetaData("_id").is(id)
+				)));
 	}
 
 	@Override
-	public GridFSFile findFilesById(@NonNull String id) {
-		return operations.findOne(query(whereMetaData("_id").is(id)));
-	}
-
-	@Override
-	public List<? extends GridFSFile> findFilesByType(@NonNull String type) {
-		return operations.find(query(whereMetaData("type").is(type)));
+	public List<GridFSDBFile> findFilesByType(@NonNull String type) {
+		return operations.find(
+			query(
+				whereMetaData("type").is(type)
+			));
 	}
 
 	@Override
 	public void deleteById(@NonNull String id) {
-		operations.delete(query(where("_id").is(id)));
+		operations.delete(
+			query(
+				where("_id").is(id)
+			));
 	}
 
 	@Override
 	public void deleteByFilename(@NonNull String filename) {
-		operations.delete(query(whereFilename().is(filename)));
+		operations.delete(
+			query(
+				whereFilename().is(filename)
+			));
 	}
 }

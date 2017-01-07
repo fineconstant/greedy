@@ -27,7 +27,7 @@ public class FileStorageIntegrationTests extends SpringIntegrationTest {
 	private TestRestTemplate restTemplate;
 
 	@MockBean
-	@Qualifier("mongoGridFsStorageService")
+	@Qualifier("mongoGridFsStorageService2")
 	private StorageService storageService;
 
 	@LocalServerPort

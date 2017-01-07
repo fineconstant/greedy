@@ -1,15 +1,18 @@
 package org.kduda.greedy.service;
 
+import org.kduda.greedy.exception.StorageException;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.stream.Stream;
 
 @Service
-public class MongoGridFsStorageService implements StorageService {
+public class MongoGridFsStorageService2 implements StorageService {
 
 	@Override
 	public void init() {
@@ -17,6 +20,15 @@ public class MongoGridFsStorageService implements StorageService {
 
 	@Override
 	public void store(MultipartFile file) {
+		// try {
+		// 	if (file.isEmpty()) {
+		// 		throw new StorageException("Failed to store empty file " + file.getOriginalFilename());
+		// 	}
+		// 	// TODO: store file here
+		//
+		// } catch (IOException e) {
+		// 	throw new StorageException("Failed to store file " + file.getOriginalFilename(), e);
+		// }
 	}
 
 	@Override

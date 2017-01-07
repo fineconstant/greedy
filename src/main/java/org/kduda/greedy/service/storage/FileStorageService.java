@@ -12,9 +12,9 @@ public interface FileStorageService {
 
 	Optional<GridFSFile> storeFile(Resource resource, String contentType, Map<String, String> metadata);
 
-	GridFSFile findFilesByName(String name);
+	Optional<GridFSDBFile> findFilesByName(String name);
 
-	GridFSFile findFilesById(String id);
+	Optional<GridFSDBFile> findFilesById(String id);
 
 	List<? extends GridFSFile> findFilesByType(String type);
 

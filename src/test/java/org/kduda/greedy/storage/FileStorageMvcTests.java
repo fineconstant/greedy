@@ -28,7 +28,7 @@ public class FileStorageMvcTests extends SpringTest {
 	private MockMvc mvc;
 
 	@MockBean
-	@Qualifier("mongoGridFsStorageService")
+	@Qualifier("mongoGridFsStorageService2")
 	private StorageService storageService;
 
 	@Test

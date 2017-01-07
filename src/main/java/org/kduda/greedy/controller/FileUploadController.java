@@ -21,13 +21,13 @@ public class FileUploadController {
 
 	private final StorageService storageService;
 
-	public FileUploadController(@Qualifier("mongoGridFsStorageService") StorageService storageService) {
+	public FileUploadController(@Qualifier("mongoGridFsStorageService2") StorageService storageService) {
 		this.storageService = storageService;
 	}
 
 	@GetMapping("files")
 	public String listFiles(Model model) throws IOException {
-// TODO: get filenams of information-system files
+// TODO: get filenames of information-system files
 
 		model.addAttribute("files", storageService
 			.loadAll()
