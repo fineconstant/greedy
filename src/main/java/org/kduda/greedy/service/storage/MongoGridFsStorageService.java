@@ -10,6 +10,7 @@ import org.springframework.data.mongodb.gridfs.GridFsOperations;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -30,26 +31,23 @@ public class MongoGridFsStorageService implements FileStorageService {
 	}
 
 	@Override
-	public Optional<GridFSFile> storeFile(@NonNull Resource resource, String contentType, Map<String, String> metadata) {
+	public Optional<GridFSFile> storeFile(@NonNull InputStream inputStream, @NonNull String filename,
+										  String contentType, Map<String, String> metadata) {
+		Optional<GridFSFile> result;
 
-		Optional<GridFSFile> result = Optional.empty();
-		try {
-			result = Optional.of(operations.store(resource.getInputStream(), resource.getFilename(), contentType, metadata));
-		} catch (IOException e) {
-			log.error("Error getting input stream from file", e);
-		}
+		result = Optional.of(operations.store(inputStream, filename, contentType, metadata));
 
 		try {
 			result.ifPresent(GridFSFile::validate);
 		} catch (MongoException e) {
-			log.error("File validation fail", e);
+			log.error("File validation fail for file:" + filename, e);
 		}
 
 		return result;
 	}
 
 	@Override
-	public Optional<GridFSDBFile> findFilesByName(@NonNull String name) {
+	public Optional<GridFSDBFile> findFileByName(@NonNull String name) {
 		return Optional.ofNullable(
 			operations.findOne(
 				query(
@@ -59,11 +57,11 @@ public class MongoGridFsStorageService implements FileStorageService {
 
 
 	@Override
-	public Optional<GridFSDBFile> findFilesById(@NonNull String id) {
+	public Optional<GridFSDBFile> findFileById(@NonNull String id) {
 		return Optional.ofNullable(
 			operations.findOne(
 				query(
-					whereMetaData("_id").is(id)
+					where("_id").is(id)
 				)));
 	}
 
@@ -88,6 +86,14 @@ public class MongoGridFsStorageService implements FileStorageService {
 		operations.delete(
 			query(
 				whereFilename().is(filename)
+			));
+	}
+
+	@Override
+	public void deleteByType(@NonNull String type) {
+		operations.delete(
+			query(
+				whereMetaData("type").is(type)
 			));
 	}
 }

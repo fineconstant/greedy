@@ -1,8 +1,9 @@
 package org.kduda.greedy.storage;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Test;
 import org.kduda.greedy.SpringIntegrationTest;
-import org.kduda.greedy.service.StorageService;
+import org.kduda.greedy.repository.CsvRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.embedded.LocalServerPort;
@@ -27,8 +28,7 @@ public class FileStorageIntegrationTests extends SpringIntegrationTest {
 	private TestRestTemplate restTemplate;
 
 	@MockBean
-	@Qualifier("mongoGridFsStorageService2")
-	private StorageService storageService;
+	private CsvRepository storageService;
 
 	@LocalServerPort
 	private int port;
@@ -49,10 +49,11 @@ public class FileStorageIntegrationTests extends SpringIntegrationTest {
 	@Test
 	public void shouldDownloadFile() throws Exception {
 		ClassPathResource resource = new ClassPathResource("/storage-integration-test-file.txt", getClass());
-		given(storageService.loadAsResource("storage-integration-test-file.txt")).willReturn(resource);
+		given(storageService.loadResourceById("10"))
+			.willReturn(Pair.of(resource.getFilename(), resource));
 
-		ResponseEntity<String> response = restTemplate.getForEntity("/files/{filename}", String.class,
-																	"storage-integration-test-file.txt");
+		ResponseEntity<String> response = restTemplate.getForEntity("/files/{id}", String.class,
+																	"10");
 
 		assertThat(response.getStatusCodeValue()).isEqualTo(200);
 		assertThat(response.getHeaders().getFirst(HttpHeaders.CONTENT_DISPOSITION))

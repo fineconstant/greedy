@@ -1,64 +1,55 @@
 package org.kduda.greedy.controller;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.kduda.greedy.exception.StorageFileNotFoundException;
-import org.kduda.greedy.service.StorageService;
+import org.kduda.greedy.repository.CsvRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
-import java.util.stream.Collectors;
 
 @Controller
 public class FileUploadController {
 
-	private final StorageService storageService;
+	private final CsvRepository csvRepository;
 
-	public FileUploadController(@Qualifier("mongoGridFsStorageService2") StorageService storageService) {
-		this.storageService = storageService;
+	public FileUploadController(CsvRepository csvRepository) {
+		this.csvRepository = csvRepository;
 	}
 
-	@GetMapping("files")
+	@GetMapping("/files")
 	public String listFiles(Model model) throws IOException {
-// TODO: get filenames of information-system files
-
-		model.addAttribute("files", storageService
-			.loadAll()
-			.map(path -> MvcUriComponentsBuilder
-				.fromMethodName(FileUploadController.class, "serveFile", path.getFileName().toString())
-				.build().toString())
-			.collect(Collectors.toList()));
-
+		model.addAttribute("files", csvRepository.listAll());
 		return "uploadForm";
 	}
 
-	@GetMapping("/files/{filename:.+}")
+	@GetMapping("/files/{id:.+}")
 	@ResponseBody
-	public ResponseEntity<Resource> serveFile(@PathVariable String filename) {
-
-		Resource file = storageService.loadAsResource(filename);
+	public ResponseEntity<Resource> serveFile(@PathVariable String id) {
+		Pair<String, Resource> file = csvRepository.loadResourceById(id);
 		return ResponseEntity
 			.ok()
-			.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"")
-			.body(file);
+			.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getKey() + "\"")
+			.body(file.getValue());
 
 	}
 
-	@PostMapping("files")
+	@PostMapping("/files")
 	public String handleFileUpload(@RequestParam("file") MultipartFile file,
 								   RedirectAttributes redirectAttributes) {
-
-		storageService.store(file);
+		csvRepository.store(file);
 		redirectAttributes.addFlashAttribute("message", "You successfully uploaded " + file.getOriginalFilename() + "!");
 
-		return "redirect:/files";
+		return "redirect:/files/";
 	}
 
 	@ExceptionHandler(StorageFileNotFoundException.class)

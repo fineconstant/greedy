@@ -7,7 +7,7 @@
 </div>
 
 <div>
-    <form method="POST" enctype="multipart/form-data" action="/">
+    <form method="POST" enctype="multipart/form-data" action="/files">
         <table>
             <tr>
                 <td>File to upload:</td>
@@ -23,10 +23,11 @@
 
 <div>
     <ul>
-        <!--/*@thymesVar id="files" type="java.util.List<java.lang.String>"*/-->
+        <!--/*@thymesVar id="files" type="java.util.List<org.kduda.greedy.model.FileModel>"*/-->
         <li th:each="file : ${files}">
-            <!--/*@thymesVar id="file" type="java.lang.String"*/-->
-            <a th:href="${file}" th:text="${file}"></a>
+            <!--/*@thymesVar id="id" type="java.lang.String"*/-->
+            <!--/*@thymesVar id="name" type="java.lang.String"*/-->
+            <a th:href="${file.id}" th:text="${file.name}"></a>
         </li>
     </ul>
 </div>

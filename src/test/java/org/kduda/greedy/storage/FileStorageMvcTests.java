@@ -2,17 +2,18 @@ package org.kduda.greedy.storage;
 
 import org.kduda.greedy.SpringTest;
 import org.kduda.greedy.exception.StorageFileNotFoundException;
-import org.kduda.greedy.service.StorageService;
+import org.kduda.greedy.model.FileModel;
+import org.kduda.greedy.repository.CsvRepository;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.stream.Stream;
 
 import static org.mockito.BDDMockito.given;
@@ -28,18 +29,18 @@ public class FileStorageMvcTests extends SpringTest {
 	private MockMvc mvc;
 
 	@MockBean
-	@Qualifier("mongoGridFsStorageService2")
-	private StorageService storageService;
+	private CsvRepository csvRepository;
 
 	@Test
 	public void shouldListAllFiles() throws Exception {
-		given(storageService.loadAll())
-			.willReturn(Stream.of(Paths.get("first.txt"), Paths.get("second.txt")));
+		given(csvRepository.listAll())
+			.willReturn(Arrays.asList(new FileModel("first.txt", "1"), new FileModel("second.txt", "2")));
 
 		mvc.perform(get("/files"))
 		   .andExpect(status().isOk())
 		   .andExpect(model().attribute("files",
-										Matchers.contains("http://localhost/files/first.txt", "http://localhost/files/second.txt")));
+										Matchers.contains(new FileModel("first.txt", "1"), new FileModel("second.txt", "2"))
+		   ));
 	}
 
 	@Test
@@ -50,7 +51,7 @@ public class FileStorageMvcTests extends SpringTest {
 		   .andExpect(status().isFound())
 		   .andExpect(header().string("Location", "/files"));
 
-		then(this.storageService).should().store(multipartFile);
+		then(this.csvRepository).should().store(multipartFile);
 	}
 
 	/**
@@ -59,7 +60,7 @@ public class FileStorageMvcTests extends SpringTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void should404WhenMissingFile() throws Exception {
-		given(storageService.loadAsResource("test.txt"))
+		given(csvRepository.loadResourceByFilename("test.txt"))
 			.willThrow(StorageFileNotFoundException.class);
 
 		mvc.perform(get("/files/test.txt"))

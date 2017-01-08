@@ -34,6 +34,8 @@
 		<scala.plugin.version>2.15.2</scala.plugin.version>
 		<scala.main.version>2.11</scala.main.version>
 		<scala.version>2.11.8</scala.version>
+
+		<commons.lang.version>3.5</commons.lang.version>
 	</properties>
 
 
@@ -104,6 +106,13 @@
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<version>${lombok.version}</version>
+		</dependency>
+
+		<!--apache-->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>${commons.lang.version}</version>
 		</dependency>
 
 		<!--spark-->
