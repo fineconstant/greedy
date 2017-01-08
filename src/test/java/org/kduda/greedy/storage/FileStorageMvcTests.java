@@ -60,7 +60,7 @@ public class FileStorageMvcTests extends SpringTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void should404WhenMissingFile() throws Exception {
-		given(csvRepository.loadResourceByFilename("test.txt"))
+		given(csvRepository.loadResourceById("10"))
 			.willThrow(StorageFileNotFoundException.class);
 
 		mvc.perform(get("/files/test.txt"))

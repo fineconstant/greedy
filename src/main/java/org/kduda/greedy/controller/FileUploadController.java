@@ -36,11 +36,13 @@ public class FileUploadController {
 	@ResponseBody
 	public ResponseEntity<Resource> serveFile(@PathVariable String id) {
 		Pair<String, Resource> file = csvRepository.loadResourceById(id);
-		return ResponseEntity
-			.ok()
-			.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getKey() + "\"")
-			.body(file.getValue());
-
+		if (file != null) {
+			return ResponseEntity
+				.ok()
+				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getKey() + "\"")
+				.body(file.getValue());
+		}
+		return ResponseEntity.notFound().build();
 	}
 
 	@PostMapping("/files")
@@ -49,7 +51,7 @@ public class FileUploadController {
 		csvRepository.store(file);
 		redirectAttributes.addFlashAttribute("message", "You successfully uploaded " + file.getOriginalFilename() + "!");
 
-		return "redirect:/files/";
+		return "redirect:/files";
 	}
 
 	@ExceptionHandler(StorageFileNotFoundException.class)
