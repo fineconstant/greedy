@@ -31,9 +31,9 @@
 
 		<lombok.version>1.16.12</lombok.version>
 
-		<scala.plugin.version>2.15.2</scala.plugin.version>
 		<scala.main.version>2.11</scala.main.version>
 		<scala.version>2.11.8</scala.version>
+		<scala.plugin.version>2.15.2</scala.plugin.version>
 
 		<commons.lang.version>3.5</commons.lang.version>
 	</properties>
@@ -74,6 +74,13 @@
 			<version>3.3.7-1</version>
 		</dependency>
 
+		<!--scala-->
+		<dependency>
+			<groupId>org.scala-lang</groupId>
+			<artifactId>scala-library</artifactId>
+			<version>${scala.version}</version>
+		</dependency>
+
 		<!--spark-->
 		<dependency>
 			<groupId>org.apache.spark</groupId>
@@ -91,14 +98,18 @@
 			<artifactId>spark-sql_${scala.main.version}</artifactId>
 			<version>${spark.version}</version>
 		</dependency>
-
-		<!--scala-->
+		<!--jackson for spark-->
 		<dependency>
-			<groupId>org.scala-lang</groupId>
-			<artifactId>scala-library</artifactId>
-			<version>${scala.version}</version>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>2.6.7</version>
 		</dependency>
-
+		<!--janino for spark-->
+		<dependency>
+			<groupId>org.codehaus.janino</groupId>
+			<artifactId>janino</artifactId>
+			<version>3.0.6</version>
+		</dependency>
 
 		<!--dev-->
 		<!--lombok-->
@@ -115,7 +126,7 @@
 			<version>${commons.lang.version}</version>
 		</dependency>
 
-		<!--spark-->
+		<!--spring-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-configuration-processor</artifactId>

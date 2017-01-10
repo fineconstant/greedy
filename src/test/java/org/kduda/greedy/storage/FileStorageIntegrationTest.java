@@ -5,7 +5,6 @@ import org.junit.Test;
 import org.kduda.greedy.SpringIntegrationTest;
 import org.kduda.greedy.repository.CsvRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.embedded.LocalServerPort;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -22,7 +21,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Matchers.any;
 
-public class FileStorageIntegrationTests extends SpringIntegrationTest {
+public class FileStorageIntegrationTest extends SpringIntegrationTest {
 
 	@Autowired
 	private TestRestTemplate restTemplate;

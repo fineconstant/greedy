@@ -1,20 +1,21 @@
 package org.kduda.greedy.storage;
 
+
+
+import org.hamcrest.Matchers;
+import org.junit.Test;
 import org.kduda.greedy.SpringTest;
+
 import org.kduda.greedy.exception.StorageFileNotFoundException;
 import org.kduda.greedy.model.FileModel;
 import org.kduda.greedy.repository.CsvRepository;
-import org.hamcrest.Matchers;
-import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.stream.Stream;
 
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
@@ -23,7 +24,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @AutoConfigureMockMvc
-public class FileStorageMvcTests extends SpringTest {
+public class FileStorageMvcTest extends SpringTest {
 
 	@Autowired
 	private MockMvc mvc;
