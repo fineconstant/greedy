@@ -1,4 +1,4 @@
-package org.kduda.greedy.spark;
+package org.kduda.greedy.unit.spark;
 
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kduda.greedy.spark.reader.CsvResourceSparkReader;
 import org.kduda.greedy.spark.reader.SparkReader;
+import org.kduda.greedy.unit.SpringUnitTest;
 import org.springframework.core.io.ClassPathResource;
 
 import javax.swing.text.html.Option;
@@ -15,7 +16,7 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class CsvInputTest {
+public class CsvInputTest extends SpringUnitTest {
 	private SparkReader reader = null;
 	private Map<String, String> options = null;
 
