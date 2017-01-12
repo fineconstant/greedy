@@ -23,6 +23,8 @@ public class MongoSparkTest extends SpringUnitTest {
 	 * in integration test:
 	 * before class: upload file to mongo
 	 * after class: delete file in mongo
+	 *
+	 * below functionality in class that is using CsvResourceSparkReader with already set options for csv i.e. headers
 	 */
 
 	@Test
