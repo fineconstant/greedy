@@ -33,7 +33,6 @@ public class CsvInputTest extends SpringUnitTest {
 
 		Dataset<Row> csv = reader.read(resource, null);
 
-
 		assertThat(csv).isNotNull();
 	}
 

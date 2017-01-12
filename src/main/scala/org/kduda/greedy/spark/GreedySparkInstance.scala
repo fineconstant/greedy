@@ -10,10 +10,18 @@ object GreedySparkInstance {
   private val appName = config.getString("greedy.spark.appName")
   private val master = config.getString("greedy.spark.master")
 
-  val sc = SparkSession.builder()
+  val sparkSession = SparkSession.builder()
     .appName(appName)
     .master(master)
+      .config("spark.mongodb.output.database","greedy")
+      .config("spark.mongodb.output.collection","spark-test")
     .getOrCreate()
 
-  val sql = sc.sqlContext
+  val sc = sparkSession.sparkContext
+
+  val sql = sparkSession.sqlContext
+
+  def test = {
+
+  }
 }

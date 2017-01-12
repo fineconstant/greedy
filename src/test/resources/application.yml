@@ -1,6 +1,12 @@
 spring:
   main:
     banner-mode: 'OFF'
+  application:
+    name: greedy
+  data:
+    mongodb:
+      database: ${spring.application.name}
+      grid-fs-database: ${spring.application.name}
 logging:
   level:
     root: info
