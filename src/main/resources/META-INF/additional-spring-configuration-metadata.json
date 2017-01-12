@@ -1,0 +1,14 @@
+{
+  "properties": [
+    {
+      "name": "greedy.spark.master",
+      "type": "java.lang.String",
+      "description": "Spark master configuration."
+    },
+    {
+      "name": "greedy.spark.appName",
+      "type": "java.lang.String",
+      "description": "Spark application name configuration."
+    }
+  ]
+}

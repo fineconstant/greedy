@@ -38,6 +38,7 @@
 		<lombok.version>1.16.12</lombok.version>
 
 		<commons.lang.version>3.5</commons.lang.version>
+		<commons.configuration.version>2.1</commons.configuration.version>
 
 		<failsafe.version>2.19.1</failsafe.version>
 	</properties>
@@ -129,6 +130,13 @@
 			<artifactId>commons-lang3</artifactId>
 			<version>${commons.lang.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-configuration2</artifactId>
+			<version>2.1</version>
+		</dependency>
+
+
 
 		<!--spring-->
 		<dependency>
