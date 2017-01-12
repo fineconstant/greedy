@@ -1,5 +1,4 @@
-# org.kduda.greedy
-##Greedy algorithm project
+##Greedy algorithms implementation
 
 ###Development
 * To enable Spring Boot Live Reload for Scala in IntelliJ:
