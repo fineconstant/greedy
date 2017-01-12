@@ -39,7 +39,7 @@ public class FileStorageTest extends SpringUnitTest {
 
 	@Test
 	public void shouldUploadFile() throws Exception {
-		ClassPathResource resource = new ClassPathResource("/storage-test-file.txt", getClass());
+		ClassPathResource resource = new ClassPathResource("/files/storage-test-file.txt", getClass());
 
 		MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
 		map.add("file", resource);
@@ -52,7 +52,7 @@ public class FileStorageTest extends SpringUnitTest {
 
 	@Test
 	public void shouldDownloadFile() throws Exception {
-		ClassPathResource resource = new ClassPathResource("/storage-test-file.txt", getClass());
+		ClassPathResource resource = new ClassPathResource("/files/storage-test-file.txt", getClass());
 		given(storageService.loadResourceById("10"))
 			.willReturn(Pair.of(resource.getFilename(), resource));
 

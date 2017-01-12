@@ -1,0 +1,9 @@
+highest to lowest
+
+TRANCE
+DEBUG
+INFO
+WARN
+ERROR
+FATAL
+OFF

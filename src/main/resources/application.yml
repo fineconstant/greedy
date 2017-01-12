@@ -7,11 +7,18 @@ spring:
       max-request-size: 128MB
   data:
     mongodb:
-      database: greedy
-      grid-fs-database: greedy
+      database: ${spring.application.name}
+      grid-fs-database: ${spring.application.name}
+  application:
+    name: greedy
+  main:
+    banner-mode: 'OFF'
 endpoints: # disable actuator in production
   actuator:
     enabled: false
+logging:
+  level:
+    root: error
 
 ---
 
@@ -32,3 +39,15 @@ endpoints: # enable actuator and shutdown endpoint
   shutdown:
     enabled: true
     sensitive: false
+logging:
+  level:
+    root: info
+
+
+# spring logging level example
+#logging:
+#  level:
+#    org:
+#      kduda:
+#        greedy: info
+#    root: error

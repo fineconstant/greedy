@@ -5,11 +5,9 @@ import com.mongodb.gridfs.GridFSDBFile;
 import com.mongodb.gridfs.GridFSFile;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.io.Resource;
 import org.springframework.data.mongodb.gridfs.GridFsOperations;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +29,7 @@ public class MongoGridFsStorageService implements FileStorageService {
 	}
 
 	@Override
-	public Optional<GridFSFile> storeFile(@NonNull InputStream inputStream, @NonNull String filename,
+	public Optional<GridFSFile> storeFile(InputStream inputStream, String filename,
 										  String contentType, Map<String, String> metadata) {
 		Optional<GridFSFile> result;
 

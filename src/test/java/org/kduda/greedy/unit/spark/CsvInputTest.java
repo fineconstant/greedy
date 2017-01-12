@@ -1,5 +1,6 @@
 package org.kduda.greedy.unit.spark;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.junit.Before;
@@ -9,13 +10,13 @@ import org.kduda.greedy.spark.reader.SparkReader;
 import org.kduda.greedy.unit.SpringUnitTest;
 import org.springframework.core.io.ClassPathResource;
 
-import javax.swing.text.html.Option;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Slf4j
 public class CsvInputTest extends SpringUnitTest {
 	private SparkReader reader = null;
 	private Map<String, String> options = null;
@@ -28,7 +29,7 @@ public class CsvInputTest extends SpringUnitTest {
 
 	@Test
 	public void shouldReadCsvFile() throws IOException {
-		ClassPathResource resource = new ClassPathResource("/paper-sample.csv", getClass());
+		ClassPathResource resource = new ClassPathResource("/files/paper-sample.csv", getClass());
 
 		Dataset<Row> csv = reader.read(resource, null);
 
@@ -37,7 +38,7 @@ public class CsvInputTest extends SpringUnitTest {
 
 	@Test
 	public void shouldReadCsvFileWithOptions() throws IOException {
-		ClassPathResource resource = new ClassPathResource("/paper-sample.csv", getClass());
+		ClassPathResource resource = new ClassPathResource("/files/paper-sample.csv", getClass());
 
 		options.put("headers", "true");
 		Dataset<Row> csv = reader.read(resource, options);
@@ -47,10 +48,11 @@ public class CsvInputTest extends SpringUnitTest {
 
 	@Test
 	public void shouldReadCsvFileWithEmptyOptions() throws IOException {
-		ClassPathResource resource = new ClassPathResource("/paper-sample.csv", getClass());
+		ClassPathResource resource = new ClassPathResource("/files/paper-sample.csv", getClass());
 
 		Dataset<Row> csv = reader.read(resource, options);
 
 		assertThat(csv).isNotNull();
 	}
+
 }

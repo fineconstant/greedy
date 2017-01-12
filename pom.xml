@@ -24,16 +24,18 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
+		<scala.main.version>2.11</scala.main.version>
+		<scala.version>2.11.8</scala.version>
+		<scala.plugin.version>2.15.2</scala.plugin.version>
+
 		<spark.version>2.1.0</spark.version>
+		<spark.jackson.version>2.6.7</spark.jackson.version>
+		<spark.janino.version>3.0.6</spark.janino.version>
 
 		<docker.maven.version>0.4.11</docker.maven.version>
 		<docker.image.prefix>kduda</docker.image.prefix>
 
 		<lombok.version>1.16.12</lombok.version>
-
-		<scala.main.version>2.11</scala.main.version>
-		<scala.version>2.11.8</scala.version>
-		<scala.plugin.version>2.15.2</scala.plugin.version>
 
 		<commons.lang.version>3.5</commons.lang.version>
 
@@ -104,13 +106,13 @@
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
-			<version>2.6.7</version>
+			<version>${spark.jackson.version}</version>
 		</dependency>
 		<!--janino for spark-->
 		<dependency>
 			<groupId>org.codehaus.janino</groupId>
 			<artifactId>janino</artifactId>
-			<version>3.0.6</version>
+			<version>${spark.janino.version}</version>
 		</dependency>
 
 		<!--dev-->
@@ -150,6 +152,10 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+
+
+
 	</dependencies>
 
 
