@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+// TODO: refactor when there is decision table or association rule file repository - make it more generic
 @Repository
 public class InfoSystemCsvRepository implements CsvRepository {
 
@@ -58,7 +59,6 @@ public class InfoSystemCsvRepository implements CsvRepository {
 		Optional<GridFSDBFile> oFile = storageService.findFileById(id);
 		return loadAsResource(oFile);
 	}
-
 
 	@Override
 	public Pair<String, Resource> loadResourceByFilename(@NonNull String filename) {

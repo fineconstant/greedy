@@ -25,6 +25,7 @@
     <ul>
         <!--/*@thymesVar id="files" type="java.util.List<org.kduda.greedy.model.FileModel>"*/-->
         <li th:each="file : ${files}">
+            <!--/*@thymesVar id="file" type="org.kduda.greedy.model.FileModel"*/-->
             <!--/*@thymesVar id="id" type="java.lang.String"*/-->
             <!--/*@thymesVar id="name" type="java.lang.String"*/-->
             <a th:href="${file.id}" th:text="${file.name}"></a>
