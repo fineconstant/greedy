@@ -1,12 +1,10 @@
-# https://hub.docker.com/r/singularities/spark/
-
-# TODO: mongodb
-
 version: "2"
 
 services:
   greedy-server:
     image: kduda/greedy
+    tmpfs:
+      - /tmp-storage
     links:
       - greedy-mongo
     depends_on:
@@ -19,6 +17,9 @@ services:
     image: mongo:latest
     ports:
       - 27017:27017
+
+
+# https://hub.docker.com/r/singularities/spark/
 #  master:
 #    image: singularities/spark
 #    command: start-spark master
