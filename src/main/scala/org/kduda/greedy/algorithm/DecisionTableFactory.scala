@@ -43,7 +43,7 @@ object DecisionTableFactory extends SparkAware {
   }
 
   /**
-    * Maps decision tables by their decision attribute.
+    * Maps decision tables by their decision attribute as a key.
     *
     * @param dts Decision tables (DataFrames) to be mapped.
     * @return Map[decision attribute -> decision table].
