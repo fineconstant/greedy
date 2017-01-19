@@ -40,7 +40,7 @@ class SparkMongo extends SparkMongoService {
     val data = sparkRead(storageFile)
 
     data.cache().show()
-    deleteFromTempStorage(storageFile);
+    deleteFromTempStorage(storageFile)
 
     data
   }
