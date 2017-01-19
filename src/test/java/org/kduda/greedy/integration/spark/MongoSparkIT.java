@@ -1,7 +1,6 @@
 package org.kduda.greedy.integration.spark;
 
 import com.mongodb.gridfs.GridFSFile;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.junit.After;
@@ -31,7 +30,7 @@ public class MongoSparkIT extends SpringIntegrationTest {
 	@Autowired private FileStorageService storageService;
 	@Autowired private SparkMongoService sparkMongo;
 
-	private GridFSFile gridFSDBFile;
+	private GridFSFile gridFSFile;
 
 	@Before
 	public void before() throws IOException {
@@ -39,21 +38,28 @@ public class MongoSparkIT extends SpringIntegrationTest {
 		metadata.put("scope", "test");
 
 		Resource resource = new ClassPathResource("/files/" + FILE_NAME);
-		gridFSDBFile = storageService.storeFile(resource.getInputStream(), FILE_NAME, FileContentTypes.CSV.getType(), metadata)
-									 .get();
+		gridFSFile = storageService.storeFile(resource.getInputStream(), FILE_NAME, FileContentTypes.CSV.getType(), metadata)
+								   .get();
 	}
 
 	@After
 	public void after() {
-		storageService.deleteById(gridFSDBFile.getId().toString());
+		storageService.deleteById(gridFSFile.getId().toString());
 	}
 
 	@Test
-	public void shouldReadCsvFromMongoAsDataset() {
+	public void shouldReadCsvFromMongoByNameAsDataset() {
 		Dataset<Row> csv = sparkMongo.readCsvByName(FILE_NAME);
 
 		assertThat(csv).isNotNull();
 		assertThat(csv.count()).isEqualTo(EXPECTED_COUNT);
 	}
 
+	@Test
+	public void shouldReadCsvFromMongoByIdAsDataset() {
+		Dataset<Row> csv = sparkMongo.readCsvById(gridFSFile.getId().toString());
+
+		assertThat(csv).isNotNull();
+		assertThat(csv.count()).isEqualTo(EXPECTED_COUNT);
+	}
 }
