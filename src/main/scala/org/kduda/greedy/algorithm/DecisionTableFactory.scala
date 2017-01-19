@@ -39,7 +39,7 @@ object DecisionTableFactory extends SparkAware {
 
   //TODO: Scaladoc
   def removeInconsistencies(dts: Array[DataFrame]): Array[DataFrame] = {
-
+    null
   }
 
   /**
