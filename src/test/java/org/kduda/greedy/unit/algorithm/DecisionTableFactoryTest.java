@@ -22,7 +22,6 @@ public class DecisionTableFactoryTest extends SpringUnitTest {
 
 	@Autowired private SparkCsvReader sparkCsvReader;
 
-	private String[][] expectedCols = {{"f2", "f3", "f1"}, {"f1", "f3", "f2"}, {"f1", "f2", "f3"}};
 	private Dataset<Row> informationSystem;
 
 	@Before
@@ -43,20 +42,48 @@ public class DecisionTableFactoryTest extends SpringUnitTest {
 
 	@Test
 	public void shouldExtractDecisionTables() {
+		String[][] expectedColumns = {{"f2", "f3", "f1"}, {"f1", "f3", "f2"}, {"f1", "f2", "f3"}};
+
 		Dataset<Row>[] dts = DecisionTableFactory.extractDecisionTables(informationSystem);
 
 		for (int i = 0; i < dts.length; i++) {
 			assertThat(dts[i].count()).isEqualTo(3);
-			assertThat(dts[i].columns()).containsSequence(expectedCols[i]);
+			assertThat(dts[i].columns()).containsSequence(expectedColumns[i]);
 		}
 	}
 
 	@Test
 	public void shouldMapDataFrame() {
 		//noinspection unchecked
-		Dataset<Row>[] dfs = new Dataset[]{informationSystem};
-		scala.collection.mutable.HashMap<String, Dataset<Row>> result = DecisionTableFactory.createMapOf(dfs);
+		Dataset<Row>[] dts = new Dataset[]{informationSystem};
+
+		scala.collection.immutable.Map<String, Dataset<Row>> result = DecisionTableFactory.createMapOf(dts);
+
 		assertThat(result).isNotNull();
 		assertThat(result.get("f3").get().columns()).containsSequence("f1", "f2", "f3");
+	}
+
+	@Test
+	public void shouldRemoveInconsistenciesFromMappedDecisionTables() {
+		Dataset<Row>[] dts = DecisionTableFactory.extractDecisionTables(informationSystem);
+
+		scala.collection.immutable.Map<String, Dataset<Row>> result =
+			DecisionTableFactory.removeInconsistencies(DecisionTableFactory.createMapOf(dts));
+
+		assertThat(result.get("f1").get().count()).isEqualTo(2L);
+		assertThat(result.get("f2").get().count()).isEqualTo(3L);
+		assertThat(result.get("f3").get().count()).isEqualTo(3L);
+	}
+
+
+	@Test
+	public void shouldRemoveInconsistenciesFromArrayOfDecisionTables() {
+		Dataset<Row>[] dts = DecisionTableFactory.extractDecisionTables(informationSystem);
+
+		Dataset<Row>[] result = DecisionTableFactory.removeInconsistencies(dts);
+
+		assertThat(result[0].count()).isEqualTo(2L);
+		assertThat(result[1].count()).isEqualTo(3L);
+		assertThat(result[2].count()).isEqualTo(3L);
 	}
 }

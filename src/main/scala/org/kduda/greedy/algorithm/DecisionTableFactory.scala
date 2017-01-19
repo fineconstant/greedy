@@ -3,7 +3,6 @@ package org.kduda.greedy.algorithm
 import org.apache.spark.sql.DataFrame
 import org.kduda.greedy.spark.generic.SparkAware
 
-import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
 
 object DecisionTableFactory extends SparkAware {
@@ -13,7 +12,7 @@ object DecisionTableFactory extends SparkAware {
     * The last attribute of each decision table is a decision attribute, preceding attributes are conditional attributes.
     *
     * @param is Information system to process.
-    * @return ArrayBuffer containing DataFrames, each of them is a decision table.
+    * @return ArrayBuffer containing cashed DataFrames, each of them is a decision table.
     */
   def extractDecisionTables(is: DataFrame): Array[DataFrame] = {
     is.cache().createOrReplaceTempView("is")
@@ -29,17 +28,13 @@ object DecisionTableFactory extends SparkAware {
 
     val stringDtsColumns = dtsColumns.map(dt => dt.mkString(","))
 
-    var dts = ArrayBuffer.empty[DataFrame]
-    for (columns <- stringDtsColumns) dts += sql.sql(s"SELECT $columns FROM is")
+    val dts = stringDtsColumns.map(columns => {
+      sql.sql(s"SELECT $columns FROM is").cache()
+    })
 
     is.unpersist()
 
-    dts.toArray
-  }
-
-  //TODO: Scaladoc
-  def removeInconsistencies(dts: Array[DataFrame]): Array[DataFrame] = {
-    null
+    dts
   }
 
   /**
@@ -48,10 +43,34 @@ object DecisionTableFactory extends SparkAware {
     * @param dts Decision tables (DataFrames) to be mapped.
     * @return Map[decision attribute -> decision table].
     */
-  def createMapOf(dts: Array[DataFrame]): mutable.HashMap[String, DataFrame]
-  = {
-    val dtsMap = mutable.HashMap.empty[String, DataFrame]
-    for (dt <- dts) dtsMap += (dt.columns.last -> dt)
-    dtsMap
+  def createMapOf(dts: Array[DataFrame]): Map[String, DataFrame] = {
+    dts.map { case (dt) => (dt.columns.last, dt) }.toMap
+  }
+
+  /**
+    * Removes all of the inconsistencies from given decision tables.
+    *
+    * @param dts A Map of decision tables to be filtered.
+    * @return Mapped decision table (DataFrame) without inconsistencies.
+    */
+  def removeInconsistencies(dts: Map[String, DataFrame]): Map[String, DataFrame] = {
+    dts.map {
+      case (key, value) =>
+        val columns = value.columns.dropRight(1)
+        (key, value.dropDuplicates(columns).cache())
+    }
+  }
+
+  /**
+    * Removes all of the inconsistencies from given decision tables.
+    *
+    * @param dts An Array of decision tables to be filtered.
+    * @return Array of decison tables (DataFrames) without inconsistencies.
+    */
+  def removeInconsistencies(dts: Array[DataFrame]): Array[DataFrame] = {
+    dts.map(dt => {
+      val columns = dt.columns.dropRight(1)
+      dt.dropDuplicates(columns).cache()
+    })
   }
 }
