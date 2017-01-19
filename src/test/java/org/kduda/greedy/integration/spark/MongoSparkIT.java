@@ -18,6 +18,7 @@ import org.springframework.core.io.Resource;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -33,17 +34,20 @@ public class MongoSparkIT extends SpringIntegrationTest {
 	private GridFSFile gridFSFile;
 
 	@Before
-	public void before() throws IOException {
+	public void setUp() throws IOException {
 		Map<String, String> metadata = new HashMap<>();
 		metadata.put("scope", "test");
 
 		Resource resource = new ClassPathResource("/files/" + FILE_NAME);
-		gridFSFile = storageService.storeFile(resource.getInputStream(), FILE_NAME, FileContentTypes.CSV.getType(), metadata)
-								   .get();
+
+
+		Optional<GridFSFile> oGridFSFile = storageService.storeFile(resource.getInputStream(), FILE_NAME, FileContentTypes.CSV
+			.getType(), metadata);
+		oGridFSFile.ifPresent(file -> gridFSFile = file);
 	}
 
 	@After
-	public void after() {
+	public void tearDown() {
 		storageService.deleteById(gridFSFile.getId().toString());
 	}
 

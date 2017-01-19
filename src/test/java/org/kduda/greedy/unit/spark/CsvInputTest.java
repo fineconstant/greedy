@@ -27,7 +27,7 @@ public class CsvInputTest extends SpringUnitTest {
 	private File file = null;
 
 	@Before
-	public void before() throws IOException {
+	public void setUp() throws IOException {
 		options = new HashMap<>();
 
 		ClassPathResource resource = new ClassPathResource("/files/paper-sample.csv", getClass());
@@ -35,7 +35,7 @@ public class CsvInputTest extends SpringUnitTest {
 	}
 
 	@After
-	public void after() {
+	public void tearDown() {
 		file = null;
 	}
 

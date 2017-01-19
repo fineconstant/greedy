@@ -28,7 +28,7 @@ public class DecisionTableFactoryTest extends SpringUnitTest {
 	private String[][] expectedCols = {{"f2", "f3", "f1"}, {"f1", "f3", "f2"}, {"f1", "f2", "f3"}};
 
 	@Before
-	public void before() throws IOException {
+	public void setUp() throws IOException {
 		ClassPathResource resource = new ClassPathResource("/files/paper-sample.csv", getClass());
 		File file = new File(resource.getURL().getPath());
 		Map<String, String> options = new HashMap<>();
@@ -37,7 +37,7 @@ public class DecisionTableFactoryTest extends SpringUnitTest {
 	}
 
 	@After
-	public void after() {
+	public void tearDown() {
 		informationSystem = null;
 	}
 
