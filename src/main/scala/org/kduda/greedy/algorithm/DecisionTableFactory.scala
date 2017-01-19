@@ -37,6 +37,12 @@ object DecisionTableFactory extends SparkAware {
     dts.toArray
   }
 
+  /**
+    * Maps decision tables by their decision attribute.
+    *
+    * @param dts Decision tables (DataFrames) to be mapped.
+    * @return Map[decision attribute -> decision table].
+    */
   def createMapOf(dts: Array[DataFrame]): mutable.HashMap[String, DataFrame] = {
     val dtsMap = mutable.HashMap.empty[String, DataFrame]
     for (dt <- dts) dtsMap += (dt.columns.last -> dt)
