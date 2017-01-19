@@ -1,5 +1,6 @@
 package org.kduda.greedy.integration.sample;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kduda.greedy.integration.SpringIntegrationTest;
 
@@ -11,6 +12,7 @@ public class SampleIT extends SpringIntegrationTest {
 		assertThat(true).isTrue();
 	}
 
+	@Ignore
 	@Test
 	public void shouldFail() {
 		assertThat(true).isFalse();
