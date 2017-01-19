@@ -10,17 +10,22 @@ import org.kduda.greedy.spark.reader.csv.SparkCsvReader;
 import org.kduda.greedy.unit.SpringUnitTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
+import scala.collection.mutable.ArrayBuffer;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 public class DecisionTableFactoryTest extends SpringUnitTest {
 
 	@Autowired private SparkCsvReader sparkCsvReader;
 
 	private Dataset<Row> informationSystem;
+
+	private String[][] expectedCols = {{"f2", "f3", "f1"}, {"f1", "f3", "f2"}, {"f1", "f2", "f3"}};
 
 	@Before
 	public void before() throws IOException {
@@ -38,6 +43,11 @@ public class DecisionTableFactoryTest extends SpringUnitTest {
 
 	@Test
 	public void shouldExtractDecisionTables() {
-		DecisionTableFactory.extractDecisionTables(informationSystem);
+		Dataset<Row>[] dts = DecisionTableFactory.extractDecisionTables(informationSystem);
+
+		for (int i = 0; i < dts.length; i++) {
+			assertThat(dts[i].count()).isEqualTo(3);
+			assertThat(dts[i].columns()).containsSequence(expectedCols[i]);
+		}
 	}
 }
