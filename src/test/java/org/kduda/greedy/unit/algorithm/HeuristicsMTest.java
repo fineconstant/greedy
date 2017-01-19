@@ -32,7 +32,8 @@ public class HeuristicsMTest extends SpringUnitTest {
 		options.put("header", "true");
 
 		Dataset<Row> is = sparkCsvReader.read(file, options);
-		dts = DecisionTableFactory.extractDecisionTables(is);
+		Dataset<Row>[] dtsInconsistent = DecisionTableFactory.extractDecisionTables(is);
+		dts = DecisionTableFactory.removeInconsistencies(dtsInconsistent);
 	}
 
 	@After
