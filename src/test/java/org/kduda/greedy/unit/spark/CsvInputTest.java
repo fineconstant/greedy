@@ -3,13 +3,16 @@ package org.kduda.greedy.unit.spark;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.kduda.greedy.spark.reader.CsvResourceSparkReader;
-import org.kduda.greedy.spark.reader.SparkReader;
+import org.kduda.greedy.spark.reader.csv.SparkCsvReader;
 import org.kduda.greedy.unit.SpringUnitTest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 
+import javax.validation.constraints.AssertTrue;
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,41 +21,48 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
 public class CsvInputTest extends SpringUnitTest {
-	private SparkReader reader = null;
+
+	@Autowired private SparkCsvReader reader = null;
+
 	private Map<String, String> options = null;
+	private File file = null;
 
 	@Before
-	public void before() {
-		reader = new CsvResourceSparkReader();
+	public void before() throws IOException {
 		options = new HashMap<>();
+
+		ClassPathResource resource = new ClassPathResource("/files/paper-sample.csv", getClass());
+		file = new File(resource.getURL().getPath());
+	}
+
+	@After
+	public void after() {
+		file = null;
 	}
 
 	@Test
-	public void shouldReadCsvFile() throws IOException {
-		ClassPathResource resource = new ClassPathResource("/files/paper-sample.csv", getClass());
-
-		Dataset<Row> csv = reader.read(resource, null);
+	public void shouldReadCsvFile() {
+		Dataset<Row> csv = reader.read(file, null);
 
 		assertThat(csv).isNotNull();
+		assertThat(csv.count()).isEqualTo(4);
 	}
 
 	@Test
-	public void shouldReadCsvFileWithOptions() throws IOException {
-		ClassPathResource resource = new ClassPathResource("/files/paper-sample.csv", getClass());
-
+	public void shouldReadCsvFileWithOptions() {
 		options.put("headers", "true");
-		Dataset<Row> csv = reader.read(resource, options);
+		Dataset<Row> csv = reader.read(file, options);
 
 		assertThat(csv).isNotNull();
+		assertThat(csv.count()).isEqualTo(4);
 	}
 
 	@Test
-	public void shouldReadCsvFileWithEmptyOptions() throws IOException {
-		ClassPathResource resource = new ClassPathResource("/files/paper-sample.csv", getClass());
-
-		Dataset<Row> csv = reader.read(resource, options);
+	public void shouldReadCsvFileWithEmptyOptions() {
+		Dataset<Row> csv = reader.read(file, options);
 
 		assertThat(csv).isNotNull();
+		assertThat(csv.count()).isEqualTo(4);
 	}
 
 }
