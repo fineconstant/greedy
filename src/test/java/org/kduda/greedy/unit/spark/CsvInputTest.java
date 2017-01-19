@@ -11,7 +11,6 @@ import org.kduda.greedy.unit.SpringUnitTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 
-import javax.validation.constraints.AssertTrue;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -22,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Slf4j
 public class CsvInputTest extends SpringUnitTest {
 
-	@Autowired private SparkCsvReader reader = null;
+	@Autowired private SparkCsvReader sparkCsvReader = null;
 
 	private Map<String, String> options = null;
 	private File file = null;
@@ -42,7 +41,7 @@ public class CsvInputTest extends SpringUnitTest {
 
 	@Test
 	public void shouldReadCsvFile() {
-		Dataset<Row> csv = reader.read(file, null);
+		Dataset<Row> csv = sparkCsvReader.read(file, null);
 
 		assertThat(csv).isNotNull();
 		assertThat(csv.count()).isEqualTo(4);
@@ -51,7 +50,7 @@ public class CsvInputTest extends SpringUnitTest {
 	@Test
 	public void shouldReadCsvFileWithOptions() {
 		options.put("headers", "true");
-		Dataset<Row> csv = reader.read(file, options);
+		Dataset<Row> csv = sparkCsvReader.read(file, options);
 
 		assertThat(csv).isNotNull();
 		assertThat(csv.count()).isEqualTo(4);
@@ -59,7 +58,7 @@ public class CsvInputTest extends SpringUnitTest {
 
 	@Test
 	public void shouldReadCsvFileWithEmptyOptions() {
-		Dataset<Row> csv = reader.read(file, options);
+		Dataset<Row> csv = sparkCsvReader.read(file, options);
 
 		assertThat(csv).isNotNull();
 		assertThat(csv.count()).isEqualTo(4);
