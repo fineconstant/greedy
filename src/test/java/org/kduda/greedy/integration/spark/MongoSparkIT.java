@@ -26,6 +26,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class MongoSparkIT extends SpringIntegrationTest {
 
 	private final static String FILE_NAME = "sample.csv";
+	private final static int EXPECTED_COUNT = 4;
 
 	@Autowired private FileStorageService storageService;
 	@Autowired private SparkMongoService sparkMongo;
@@ -52,7 +53,7 @@ public class MongoSparkIT extends SpringIntegrationTest {
 		Dataset<Row> csv = sparkMongo.readCsvByName(FILE_NAME);
 
 		assertThat(csv).isNotNull();
-		assertThat(csv.count()).isEqualTo(4);
+		assertThat(csv.count()).isEqualTo(EXPECTED_COUNT);
 	}
 
 }
