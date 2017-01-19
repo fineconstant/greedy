@@ -4,7 +4,7 @@ import java.io.{File, IOException}
 import java.util
 
 import com.mongodb.gridfs.GridFSDBFile
-import org.apache.spark.sql.{Dataset, Row}
+import org.apache.spark.sql.{Dataset, Row, DataFrame}
 import org.kduda.greedy.service.storage.FileStorageService
 import org.kduda.greedy.spark.reader.csv.SparkCsvReader
 import org.slf4j.LoggerFactory
@@ -19,20 +19,20 @@ class SparkMongo extends SparkMongoService {
   @Autowired private val storage: FileStorageService = null
 
   @Override
-  def readCsvByName(name: String): Dataset[Row] = {
+  def readCsvByName(name: String): DataFrame = {
     val gridFSDBFile = storage.findFileByName(name).get
 
     readAsDataset(gridFSDBFile)
   }
 
   @Override
-  def readCsvById(id: String): Dataset[Row] = {
+  def readCsvById(id: String): DataFrame = {
     val gridFSDBFile = storage.findFileById(id).get
 
     readAsDataset(gridFSDBFile)
   }
 
-  private def readAsDataset(gridFSDBFile: GridFSDBFile): Dataset[Row] = {
+  private def readAsDataset(gridFSDBFile: GridFSDBFile): DataFrame = {
     val storageFile = new File("tmp-storage/" + gridFSDBFile.getFilename)
 
     saveToTempStorage(gridFSDBFile, storageFile)
@@ -56,7 +56,7 @@ class SparkMongo extends SparkMongoService {
     log.info("Written " + writtenBytes + " bytes into " + storageFile.getAbsolutePath)
   }
 
-  private def sparkRead(file: File): Dataset[Row] = {
+  private def sparkRead(file: File): DataFrame = {
     val options = new util.HashMap[String, String]()
     options.put("header", "true")
     csvReader.read(file, options)

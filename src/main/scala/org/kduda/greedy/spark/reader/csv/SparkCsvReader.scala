@@ -3,7 +3,7 @@ package org.kduda.greedy.spark.reader.csv
 import java.io.File
 import javax.annotation.Nullable
 
-import org.apache.spark.sql.{Dataset, Row}
+import org.apache.spark.sql.{DataFrame, Dataset, Row}
 
 trait SparkCsvReader {
 
@@ -14,5 +14,5 @@ trait SparkCsvReader {
     * @param options Additional options.
     * @return Spark Dataset of Row.
     */
-  def read(file: File, @Nullable options: java.util.Map[String, String]): Dataset[Row]
+  def read(file: File, @Nullable options: java.util.Map[String, String]): DataFrame
 }
