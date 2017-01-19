@@ -3,6 +3,7 @@ package org.kduda.greedy.algorithm
 import org.apache.spark.sql.DataFrame
 import org.kduda.greedy.spark.generic.SparkAware
 
+import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
 
 object DecisionTableFactory extends SparkAware {
@@ -28,9 +29,17 @@ object DecisionTableFactory extends SparkAware {
 
     val stringDtColumns = dtColumns.map(dt => dt.mkString(","))
 
-    var dts = new ArrayBuffer[DataFrame]()
+    var dts = ArrayBuffer.empty[DataFrame]
     for (cols <- stringDtColumns) dts += sql.sql(s"SELECT $cols FROM is")
 
+    is.unpersist()
+
     dts.toArray
+  }
+
+  def createMapOf(dts: Array[DataFrame]): mutable.HashMap[String, DataFrame] = {
+    val dtsMap = mutable.HashMap.empty[String, DataFrame]
+    for (dt <- dts) dtsMap += (dt.columns.last -> dt)
+    dtsMap
   }
 }

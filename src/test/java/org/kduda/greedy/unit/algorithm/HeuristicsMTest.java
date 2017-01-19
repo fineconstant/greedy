@@ -6,7 +6,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.kduda.greedy.algorithm.DecisionTableFactory;
+import org.kduda.greedy.algorithm.HeuristicsM;
 import org.kduda.greedy.spark.reader.csv.SparkCsvReader;
+import org.kduda.greedy.unit.SpringUnitTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 
@@ -15,7 +17,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class HeuristicsMTest {
+public class HeuristicsMTest extends SpringUnitTest {
 
 	@Autowired private SparkCsvReader sparkCsvReader;
 
@@ -40,7 +42,7 @@ public class HeuristicsMTest {
 
 	@Test
 	public void test() {
-
+		HeuristicsM.calculateDecisionRules(dts);
 	}
 
 }

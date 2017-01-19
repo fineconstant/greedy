@@ -10,7 +10,6 @@ import org.kduda.greedy.spark.reader.csv.SparkCsvReader;
 import org.kduda.greedy.unit.SpringUnitTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
-import scala.collection.mutable.ArrayBuffer;
 
 import java.io.File;
 import java.io.IOException;
@@ -50,5 +49,14 @@ public class DecisionTableFactoryTest extends SpringUnitTest {
 			assertThat(dts[i].count()).isEqualTo(3);
 			assertThat(dts[i].columns()).containsSequence(expectedCols[i]);
 		}
+	}
+
+	@Test
+	public void shouldMapDataFrame() {
+		//noinspection unchecked
+		Dataset<Row>[] dfs = new Dataset[]{informationSystem};
+		scala.collection.mutable.HashMap<String, Dataset<Row>> result = DecisionTableFactory.createMapOf(dfs);
+		assertThat(result).isNotNull();
+		assertThat(result.get("f3").get().columns()).containsSequence("f1", "f2", "f3");
 	}
 }
