@@ -23,16 +23,17 @@ public class DecisionTableFactoryTest extends SpringUnitTest {
 
 	@Autowired private SparkCsvReader sparkCsvReader;
 
-	private Dataset<Row> informationSystem;
-
 	private String[][] expectedCols = {{"f2", "f3", "f1"}, {"f1", "f3", "f2"}, {"f1", "f2", "f3"}};
+	private Dataset<Row> informationSystem;
 
 	@Before
 	public void setUp() throws IOException {
 		ClassPathResource resource = new ClassPathResource("/files/paper-sample.csv", getClass());
 		File file = new File(resource.getURL().getPath());
+
 		Map<String, String> options = new HashMap<>();
 		options.put("header", "true");
+
 		informationSystem = sparkCsvReader.read(file, options);
 	}
 
