@@ -19,22 +19,27 @@ object DecisionTableFactory extends SparkAware {
     is.cache().createOrReplaceTempView("is")
     val isColumns = is.columns
 
-    val dtColumns = isColumns.map(col => {
-      var result = new ArrayBuffer[String]
-      result.insertAll(0, isColumns)
-      result -= col
-      result += col
-      result
+    val dtsColumns = isColumns.map(col => {
+      var dtColumns = ArrayBuffer.empty[String]
+      dtColumns.insertAll(0, isColumns)
+      dtColumns -= col
+      dtColumns += col
+      dtColumns
     })
 
-    val stringDtColumns = dtColumns.map(dt => dt.mkString(","))
+    val stringDtsColumns = dtsColumns.map(dt => dt.mkString(","))
 
     var dts = ArrayBuffer.empty[DataFrame]
-    for (cols <- stringDtColumns) dts += sql.sql(s"SELECT $cols FROM is")
+    for (columns <- stringDtsColumns) dts += sql.sql(s"SELECT $columns FROM is")
 
     is.unpersist()
 
     dts.toArray
+  }
+
+  //TODO: Scaladoc
+  def removeInconsistencies(dts: Array[DataFrame]): Array[DataFrame] = {
+
   }
 
   /**
@@ -43,7 +48,8 @@ object DecisionTableFactory extends SparkAware {
     * @param dts Decision tables (DataFrames) to be mapped.
     * @return Map[decision attribute -> decision table].
     */
-  def createMapOf(dts: Array[DataFrame]): mutable.HashMap[String, DataFrame] = {
+  def createMapOf(dts: Array[DataFrame]): mutable.HashMap[String, DataFrame]
+  = {
     val dtsMap = mutable.HashMap.empty[String, DataFrame]
     for (dt <- dts) dtsMap += (dt.columns.last -> dt)
     dtsMap
