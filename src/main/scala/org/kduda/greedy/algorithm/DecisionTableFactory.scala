@@ -15,22 +15,21 @@ object DecisionTableFactory extends SparkAware {
     * @return ArrayBuffer containing cashed DataFrames, each of them is a decision table.
     */
   def extractDecisionTables(is: DataFrame): Array[DataFrame] = {
-    is.cache().createOrReplaceTempView("is")
+    is.cache()
     val isColumns = is.columns
 
-    val dtsColumns = isColumns.map(col => {
-      var dtColumns = ArrayBuffer.empty[String]
-      dtColumns.insertAll(0, isColumns)
-      dtColumns -= col
-      dtColumns += col
-      dtColumns
-    })
+    val dtsColumns = isColumns.map(
+      col => {
+        var dtColumns = ArrayBuffer.empty[String]
+        dtColumns.insertAll(0, isColumns)
+        dtColumns -= col
+        dtColumns += col
+        dtColumns
+      })
 
-    val stringDtsColumns = dtsColumns.map(dt => dt.mkString(","))
-
-    val dts = stringDtsColumns.map(columns => {
-      sql.sql(s"SELECT $columns FROM is").cache()
-    })
+    val dts = dtsColumns.map {
+      dtCols => is.select(dtCols.head, dtCols.drop(1): _*)
+    }
 
     is.unpersist()
 
@@ -65,7 +64,7 @@ object DecisionTableFactory extends SparkAware {
     * Removes all the rows with duplicated conditional attributes from given decision tables.
     *
     * @param dts An Array of decision tables to be filtered.
-    * @return Array of decison tables (DataFrames) without duplicated conditional attributes values.
+    * @return Array of decision tables (DataFrames) without duplicated conditional attributes values.
     */
   def removeDuplicatedConditions(dts: Array[DataFrame]): Array[DataFrame] = {
     dts.map(dt => {
@@ -89,10 +88,29 @@ object DecisionTableFactory extends SparkAware {
     * Removes all of the inconsistencies from given decision tables.
     *
     * @param dts An Array of decision tables to be filtered.
-    * @return Array of decison tables (DataFrames) without inconsistencies.
+    * @return Array of decision tables (DataFrames) without inconsistencies.
     */
   def removeInconsistencies(dts: Array[DataFrame]): Array[DataFrame] = {
-//    TODO: implement
-   null
+    //    TODO: implement
+    val dt = dts(0)
+
+    val allCols = dt.columns
+    val allColsStr = allCols.mkString(",")
+    val decisionCol = allCols.last
+    val conditionCols = allCols.dropRight(1)
+    val conditionColsStr = conditionCols.mkString(",")
+
+    val decisionCount = dt.groupBy(decisionCol)
+                        .count()
+                        .cache()
+                        .createOrReplaceTempView("decisionCount")
+    val conditionCount = dt.groupBy(conditionCols.head, conditionCols.drop(1): _*)
+                         .count()
+                         .cache()
+                         .createOrReplaceTempView("conditionCount")
+
+    //    val candidates = dt.wh
+
+    null
   }
 }
