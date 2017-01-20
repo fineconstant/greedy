@@ -47,6 +47,7 @@ object DecisionTableFactory extends SparkAware {
   }
 
   /**
+    * AKA FirstIndex removing of inconsistencies method.
     * Removes all of the inconsistencies from given decision tables.
     *
     * @param dts A Map of decision tables to be filtered.
@@ -61,6 +62,7 @@ object DecisionTableFactory extends SparkAware {
   }
 
   /**
+    * AKA FirstIndex removing of inconsistencies method.
     * Removes all the rows with duplicated conditional attributes from given decision tables.
     *
     * @param dts An Array of decision tables to be filtered.

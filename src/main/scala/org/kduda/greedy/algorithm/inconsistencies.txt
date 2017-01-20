@@ -1,0 +1,19 @@
+Group by decision
+A = (decision, count)
+
+Group by condition
+B = (condition, count) where count > 1
+
+C = Select from A where condition = B
+
+D = drop duplicates C (D only inconsistent rows)
+
+E = All  - C
+
+F = For each condition  in D
+   Get (condition, all decisions) from D
+   Create (c, d) where d is from A where (A(decision) is in all decisions) and (A(count) is max)
+
+G = drop duplicates F
+
+Result = E + G
