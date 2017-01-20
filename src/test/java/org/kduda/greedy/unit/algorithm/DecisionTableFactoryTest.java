@@ -64,6 +64,30 @@ public class DecisionTableFactoryTest extends SpringUnitTest {
 	}
 
 	@Test
+	public void shouldRemoveDuplicatedConditionsFromMappedDecisionTables() {
+		Dataset<Row>[] dts = DecisionTableFactory.extractDecisionTables(informationSystem);
+
+		scala.collection.immutable.Map<String, Dataset<Row>> result =
+			DecisionTableFactory.removeDuplicatedConditions(DecisionTableFactory.createMapOf(dts));
+
+		assertThat(result.get("f1").get().count()).isEqualTo(2L);
+		assertThat(result.get("f2").get().count()).isEqualTo(3L);
+		assertThat(result.get("f3").get().count()).isEqualTo(3L);
+	}
+
+
+	@Test
+	public void shouldRemoveDuplicatedConditionsFromArrayOfDecisionTables() {
+		Dataset<Row>[] dts = DecisionTableFactory.extractDecisionTables(informationSystem);
+
+		Dataset<Row>[] result = DecisionTableFactory.removeDuplicatedConditions(dts);
+
+		assertThat(result[0].count()).isEqualTo(2L);
+		assertThat(result[1].count()).isEqualTo(3L);
+		assertThat(result[2].count()).isEqualTo(3L);
+	}
+
+	@Test
 	public void shouldRemoveInconsistenciesFromMappedDecisionTables() {
 		Dataset<Row>[] dts = DecisionTableFactory.extractDecisionTables(informationSystem);
 

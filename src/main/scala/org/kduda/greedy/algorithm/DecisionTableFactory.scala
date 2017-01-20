@@ -51,14 +51,38 @@ object DecisionTableFactory extends SparkAware {
     * Removes all of the inconsistencies from given decision tables.
     *
     * @param dts A Map of decision tables to be filtered.
-    * @return Mapped decision table (DataFrame) without inconsistencies.
+    * @return Mapped decision table (DataFrame) without duplicated conditional attributes values.
     */
-  def removeInconsistencies(dts: Map[String, DataFrame]): Map[String, DataFrame] = {
+  def removeDuplicatedConditions(dts: Map[String, DataFrame]): Map[String, DataFrame] = {
     dts.map {
       case (key, value) =>
         val columns = value.columns.dropRight(1)
         (key, value.dropDuplicates(columns).cache())
     }
+  }
+
+  /**
+    * Removes all the rows with duplicated conditional attributes from given decision tables.
+    *
+    * @param dts An Array of decision tables to be filtered.
+    * @return Array of decison tables (DataFrames) without duplicated conditional attributes values.
+    */
+  def removeDuplicatedConditions(dts: Array[DataFrame]): Array[DataFrame] = {
+    dts.map(dt => {
+      val columns = dt.columns.dropRight(1)
+      dt.dropDuplicates(columns).cache()
+    })
+  }
+
+  /**
+    * Removes all the rows with duplicated conditional attributes from given decision tables.
+    *
+    * @param dts A Map of decision tables to be filtered.
+    * @return Mapped decision table (DataFrame) without inconsistencies.
+    */
+  def removeInconsistencies(dts: Map[String, DataFrame]): Map[String, DataFrame] = {
+    //    TODO: implement
+    null
   }
 
   /**
@@ -68,9 +92,7 @@ object DecisionTableFactory extends SparkAware {
     * @return Array of decison tables (DataFrames) without inconsistencies.
     */
   def removeInconsistencies(dts: Array[DataFrame]): Array[DataFrame] = {
-    dts.map(dt => {
-      val columns = dt.columns.dropRight(1)
-      dt.dropDuplicates(columns).cache()
-    })
+//    TODO: implement
+   null
   }
 }
