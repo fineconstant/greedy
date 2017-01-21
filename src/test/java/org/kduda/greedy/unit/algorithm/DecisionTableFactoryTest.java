@@ -86,28 +86,4 @@ public class DecisionTableFactoryTest extends SpringUnitTest {
 		assertThat(result[1].count()).isEqualTo(3L);
 		assertThat(result[2].count()).isEqualTo(3L);
 	}
-
-	@Test
-	public void shouldRemoveInconsistenciesFromMappedDecisionTables() {
-		Dataset<Row>[] dts = DecisionTableFactory.extractDecisionTables(informationSystem);
-
-		scala.collection.immutable.Map<String, Dataset<Row>> result =
-			DecisionTableFactory.removeInconsistencies(DecisionTableFactory.createMapOf(dts));
-
-		assertThat(result.get("f1").get().count()).isEqualTo(2L);
-		assertThat(result.get("f2").get().count()).isEqualTo(3L);
-		assertThat(result.get("f3").get().count()).isEqualTo(3L);
-	}
-
-
-	@Test
-	public void shouldRemoveInconsistenciesFromArrayOfDecisionTables() {
-		Dataset<Row>[] dts = DecisionTableFactory.extractDecisionTables(informationSystem);
-
-		Dataset<Row>[] result = DecisionTableFactory.removeInconsistencies(dts);
-
-		// assertThat(result[0].count()).isEqualTo(2L);
-		// assertThat(result[1].count()).isEqualTo(3L);
-		// assertThat(result[2].count()).isEqualTo(3L);
-	}
 }
