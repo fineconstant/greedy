@@ -91,53 +91,43 @@ object DecisionTableFactory extends SparkAware {
         val dt = value.dropDuplicates().cache()
 
         val allCols = dt.columns
-        val decisionColName = allCols.last
         val conditionCols = allCols.dropRight(1)
+        val decisionColName = allCols.last
 
-        val decisionCount = dt.groupBy(decisionColName)
-                            .count()
-                            .orderBy(desc("count"))
-                            .drop("count")
-                            .collect()
+        val decisionCount = countDecisions(dt, decisionColName)
+        val inconsistentConditions = extractInconsistentConditions(dt, conditionCols)
+                                     .cache()
 
-        val conditionCand = dt.groupBy(conditionCols.head, conditionCols.drop(1): _*)
-                            .count()
-                            .filter(r => r.getAs[Long]("count") > 1)
-                            .drop("count")
-                            .cache()
-
-        if (conditionCand.count() == 0) {
-          conditionCand.unpersist()
+        if (inconsistentConditions.count() == 0) {
+          // decision table is consistent
+          inconsistentConditions.unpersist()
           (key, dt)
         }
         else {
-          val inconsistent = dt.join(broadcast(conditionCand), conditionCand.columns).cache()
-          conditionCand.unpersist()
+          val inconsistentData = dt.join(broadcast(inconsistentConditions), inconsistentConditions.columns)
+                                 .cache()
+          val inconsistentDataCondCols = inconsistentData.columns.dropRight(1)
+          inconsistentConditions.unpersist()
 
-          val inconsistentCondCols = inconsistent.columns.dropRight(1)
+          val inconsistentGrouped = inconsistentData
+                                    .groupBy(inconsistentDataCondCols.head, inconsistentDataCondCols.drop(1): _*)
+                                    .agg(collect_set(decisionColName))
+                                    .withColumnRenamed(s"collect_set($decisionColName)", decisionColName)
+                                    .cache()
 
-
-          val inconsistentSet = inconsistent.groupBy(inconsistentCondCols.head, inconsistentCondCols.drop(1): _*)
-                                .agg(collect_set(decisionColName))
-                                .withColumnRenamed(s"collect_set($decisionColName)", decisionColName)
-                                .cache()
-
-          val encoder = RowEncoder(dt.schema)
-
-          val consistent = inconsistentSet.map(row => {
+          val dtRowEncoder = RowEncoder(dt.schema)
+          val consistent = inconsistentGrouped.map(row => {
             val set = row.getAs[Seq[String]](decisionColName)
 
-            val oMostCommonDecision = decisionCount.find(
-              decision => set.contains(decision.getString(0))
-            )
+            val mcd = decisionCount
+                      .find(decision => set.contains(decision.getString(0)))
+                      .get.getString(0)
 
-            val mcd = oMostCommonDecision.get.getString(0)
             Row.fromSeq(row.toSeq.dropRight(1) :+ mcd)
+          })(dtRowEncoder)
+          inconsistentGrouped.unpersist()
 
-          })(encoder)
-          inconsistentSet.unpersist()
-
-          val result = dt.except(inconsistent).union(consistent)
+          val result = dt.except(inconsistentData).union(consistent)
           dt.unpersist()
 
           (key, result.cache())
@@ -157,57 +147,62 @@ object DecisionTableFactory extends SparkAware {
       val dt = decisionTable.dropDuplicates().cache()
 
       val allCols = dt.columns
-      val decisionColName = allCols.last
       val conditionCols = allCols.dropRight(1)
+      val decisionColName = allCols.last
 
-      val decisionCount = dt.groupBy(decisionColName)
-                          .count()
-                          .orderBy(desc("count"))
-                          .drop("count")
-                          .collect()
+      val decisionCount = countDecisions(dt, decisionColName)
+      val inconsistentConditions = extractInconsistentConditions(dt, conditionCols)
+                                   .cache()
 
-      val conditionCand = dt.groupBy(conditionCols.head, conditionCols.drop(1): _*)
-                          .count()
-                          .filter(r => r.getAs[Long]("count") > 1)
-                          .drop("count")
-                          .cache()
-
-      if (conditionCand.count() == 0) {
-        conditionCand.unpersist()
+      if (inconsistentConditions.count() == 0) {
+        // decision table is consistent
+        inconsistentConditions.unpersist()
         dt
       }
       else {
-        val inconsistent = dt.join(broadcast(conditionCand), conditionCand.columns).cache()
-        conditionCand.unpersist()
+        val inconsistentData = dt.join(broadcast(inconsistentConditions), inconsistentConditions.columns)
+                               .cache()
+        val inconsistentDataCondCols = inconsistentData.columns.dropRight(1)
+        inconsistentConditions.unpersist()
 
-        val inconsistentCondCols = inconsistent.columns.dropRight(1)
+        val inconsistentGrouped = inconsistentData
+                                  .groupBy(inconsistentDataCondCols.head, inconsistentDataCondCols.drop(1): _*)
+                                  .agg(collect_set(decisionColName))
+                                  .withColumnRenamed(s"collect_set($decisionColName)", decisionColName)
+                                  .cache()
 
-
-        val inconsistentSet = inconsistent.groupBy(inconsistentCondCols.head, inconsistentCondCols.drop(1): _*)
-                              .agg(collect_set(decisionColName))
-                              .withColumnRenamed(s"collect_set($decisionColName)", decisionColName)
-                              .cache()
-
-        val encoder = RowEncoder(dt.schema)
-
-        val consistent = inconsistentSet.map(row => {
+        val dtRowEncoder = RowEncoder(dt.schema)
+        val consistent = inconsistentGrouped.map(row => {
           val set = row.getAs[Seq[String]](decisionColName)
 
-          val oMostCommonDecision = decisionCount.find(
-            decision => set.contains(decision.getString(0))
-          )
+          val mcd = decisionCount
+                    .find(decision => set.contains(decision.getString(0)))
+                    .get.getString(0)
 
-          val mcd = oMostCommonDecision.get.getString(0)
           Row.fromSeq(row.toSeq.dropRight(1) :+ mcd)
+        })(dtRowEncoder)
+        inconsistentGrouped.unpersist()
 
-        })(encoder)
-        inconsistentSet.unpersist()
-
-        val result = dt.except(inconsistent).union(consistent)
+        val result = dt.except(inconsistentData).union(consistent)
         dt.unpersist()
 
         result.cache()
       }
     })
+  }
+
+  private def countDecisions(dt: Dataset[Row], decisionColumnName: String): Array[Row] = {
+    dt.groupBy(decisionColumnName)
+    .count()
+    .orderBy(desc("count"))
+    .drop("count")
+    .collect()
+  }
+
+  private def extractInconsistentConditions(dt: Dataset[Row], conditionCols: Array[String]) = {
+    dt.groupBy(conditionCols.head, conditionCols.drop(1): _*)
+    .count()
+    .filter(r => r.getAs[Long]("count") > 1)
+    .drop("count")
   }
 }

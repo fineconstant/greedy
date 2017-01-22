@@ -55,7 +55,6 @@ public class MostCommonDecisionTest extends SpringUnitTest {
 		assertThat(result.get("f4").get().count()).isEqualTo(9L);
 	}
 
-
 	@Test
 	public void shouldRemoveInconsistenciesFromArrayOfDecisionTables() {
 		Dataset<Row>[] dts = DecisionTableFactory.extractDecisionTables(informationSystem);
