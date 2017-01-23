@@ -1,4 +1,4 @@
-package org.kduda.greedy.unit.algorithm;
+package org.kduda.greedy.unit.algorithm.m;
 
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
@@ -17,11 +17,13 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 public class HeuristicsMTest extends SpringUnitTest {
 
 	@Autowired private SparkCsvReader sparkCsvReader;
 
-	private Dataset<Row>[] dts;
+	private scala.collection.immutable.Map<String, Dataset<Row>> dtsMapped;
 
 	@Before
 	public void setUp() throws IOException {
@@ -33,17 +35,18 @@ public class HeuristicsMTest extends SpringUnitTest {
 
 		Dataset<Row> is = sparkCsvReader.read(file, options);
 		Dataset<Row>[] dtsInconsistent = DecisionTableFactory.extractDecisionTables(is);
-		dts = DecisionTableFactory.removeInconsistenciesMCD(dtsInconsistent);
+		Dataset<Row>[] consistent = DecisionTableFactory.removeInconsistenciesMCD(dtsInconsistent);
+		dtsMapped = DecisionTableFactory.createMapOf(consistent);
 	}
 
 	@After
 	public void tearDown() {
-		dts = null;
+		dtsMapped = null;
 	}
 
 	@Test
 	public void test() {
-		HeuristicsM.calculateDecisionRules(dts);
+		HeuristicsM.calculateDecisionRules(dtsMapped);
 	}
 
 }
