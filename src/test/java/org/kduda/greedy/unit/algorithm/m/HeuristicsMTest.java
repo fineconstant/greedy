@@ -45,7 +45,7 @@ public class HeuristicsMTest extends SpringUnitTest {
 	}
 
 	@Test
-	public void test() {
+	public void shouldGenerateAssociationRules() {
 		HeuristicsM.calculateDecisionRules(dtsMapped);
 	}
 
