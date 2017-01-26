@@ -5,60 +5,68 @@ import org.apache.spark.sql.DataFrame
 import org.kduda.greedy.spark.generic.SparkAware
 
 import scala.collection.mutable.ArrayBuffer
-import scala.collection.{SortedMap, mutable}
 
 object HeuristicsM extends SparkAware {
 
+  // TODO: define returning type
   def calculateDecisionRules(dts: Map[String, DataFrame]): Map[String, Option[DataFrame]] = {
     for ((key, dt) <- dts) {
 
     }
-    // FIXME: remove drop
+    // FIXME: remove dropRight
     dts.dropRight(2).map { case (key, dt) =>
+      val result = ArrayBuffer.empty[List[(String, String)]]
+
       dt.cache()
-      dt.show() // FIXME: debug
+      dt.show() // FIXME: remove
 
       val allCols = dt.columns
       val conditionCols = allCols.dropRight(1)
-      val decisionCol = allCols.last
 
+      val decisionCol = allCols.last
       // if degenerated or empty return Optional.empty
       if (dt.select(decisionCol).distinct().count() <= 1)
-        return Map(decisionCol -> Option.empty[DataFrame])
-      // continue calculations
+      return Map(decisionCol -> Option.empty[DataFrame])
+      // else continue calculations
       else {
 
-        val rows = dt.collect()
+        val dtRows = dt.collect()
 
         // calculating for each row here
-        for (currentRow <- rows) {
-          val decision = currentRow.getAs[String](decisionCol)
+        for (dtRow <- dtRows) {
+          val decision = dtRow.getAs[String](decisionCol)
 
-
-          // potential columns with their M calculated
-          val potential = ArrayBuffer.empty[(Int, String, String)]
-
+          // potential columns with their M calculated, format: (M, column, value)
+          val candidates = ArrayBuffer.empty[(Long, String, String)]
           // calculating M
           for (col <- conditionCols) {
-            val NT = rows.filter(row => row.getAs[String](col) == currentRow.getAs[String](col))
+            // N(T)
+            val NT = dtRows.filter(row => row.getAs[String](col) == dtRow.getAs[String](col))
             val NTCount = NT.length
+            // N(T, a)
             val NTA = NT.filter(row => row.getAs[String](decisionCol) == decision)
             val NTACount = NTA.length
+
+            // M = N(T), - N(T, a)
             val M = NTCount - NTACount
-
-            potential += Tuple3(M, col, currentRow.getAs[String](col))
+            candidates += Tuple3(M, col, dtRow.getAs[String](col))
           }
-          val sortedPotential = potential.sortWith(_._1 < _._1)
+          // order by the descending of value of M and get first item - it is the chosen column
+          val chosenCol = candidates.sortWith(_._1 < _._1).head
+
+          // row result () <- () ^ ... () ^ ()
+          // head - decision
+          // tail - condition
+          result += List((decisionCol, dtRow.getAs[String](decisionCol)), (chosenCol._2, chosenCol._3))
 
 
-          // row result () ^ () ^ ... ^ () -> ()
-          val x = Array(
-            (sortedPotential.head._2, sortedPotential.head._3), (decisionCol, currentRow.getAs[String](decisionCol)))
+          /** TODO: make it work in loop until subtable is empty or decision is a common decision for table
+            * (all decisions identical identical in  subtable)
+            */
 
-          x.foreach(Console.println(_))
-          Console.println()
-          // TODO: make it work in loop until subtable is empty or more than one decision
         }
+
+        result.foreach(Console.println(_))
 
 
         // return result as map of Optional value

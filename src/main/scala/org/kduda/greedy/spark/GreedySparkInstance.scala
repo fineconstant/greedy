@@ -16,6 +16,7 @@ object GreedySparkInstance {
     .master(master)
     .config("spark.mongodb.output.database", "greedy")
     .config("spark.mongodb.output.collection", "spark-test")
+    .config("spark.sql.warehouse.dir", "tmp-storage")
     .getOrCreate()
 
   val sc: SparkContext = sparkSession.sparkContext

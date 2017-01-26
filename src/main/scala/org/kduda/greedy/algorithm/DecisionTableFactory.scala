@@ -33,7 +33,6 @@ object DecisionTableFactory extends SparkAware {
     val dts = dtsColumns.map {
       dtCols => is.select(dtCols.head, dtCols.drop(1): _*)
     }
-
     is.unpersist()
 
     dts
@@ -160,7 +159,7 @@ object DecisionTableFactory extends SparkAware {
         dt
       }
       else {
-        val inconsistentData = dt.join(broadcast(inconsistentConditions), inconsistentConditions.columns)
+        val inconsistentData = dt.join(inconsistentConditions, inconsistentConditions.columns)
                                .cache()
         val inconsistentDataCondCols = inconsistentData.columns.dropRight(1)
         inconsistentConditions.unpersist()
