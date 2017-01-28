@@ -11,6 +11,8 @@ import org.kduda.greedy.spark.reader.csv.SparkCsvReader;
 import org.kduda.greedy.unit.SpringUnitTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
+import scala.Tuple2;
+import scala.collection.immutable.List;
 
 import java.io.File;
 import java.io.IOException;
@@ -45,8 +47,26 @@ public class HeuristicsMTest extends SpringUnitTest {
 	}
 
 	@Test
-	public void shouldGenerateAssociationRules() {
-		HeuristicsM.calculateDecisionRules(dtsMapped);
+	public void shouldReturnNonNullValue() {
+		scala.collection.immutable.Map<String, List<List<Tuple2<String, String>>>> result = HeuristicsM.calculateDecisionRules(dtsMapped);
+
+		assertThat(result).isNotNull();
+	}
+
+	@Test
+	public void shouldReturnMapWith3Elements() {
+		scala.collection.immutable.Map<String, List<List<Tuple2<String, String>>>> result = HeuristicsM.calculateDecisionRules(dtsMapped);
+
+		assertThat(result.size()).isEqualTo(3);
+	}
+
+	@Test
+	public void shouldReturnValidRules() {
+		scala.collection.immutable.Map<String, List<List<Tuple2<String, String>>>> result = HeuristicsM.calculateDecisionRules(dtsMapped);
+
+		assertThat(result.get("f3").get().size()).isEqualTo(0);
+		assertThat(result.get("f2").get().size()).isEqualTo(3);
+		assertThat(result.get("f1").get().size()).isEqualTo(2);
 	}
 
 }

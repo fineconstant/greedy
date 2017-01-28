@@ -1,7 +1,6 @@
 package org.kduda.greedy.algorithm
 
-
-import org.apache.spark.sql.{DataFrame, Row}
+import org.apache.spark.sql.DataFrame
 import org.kduda.greedy.algorithm.util.GreedyUtils
 import org.kduda.greedy.spark.generic.SparkAware
 
@@ -9,98 +8,72 @@ import scala.collection.mutable.ArrayBuffer
 
 object HeuristicsM extends SparkAware {
 
+  def calculateDecisionRules(dts: Map[String, DataFrame]): Map[String, List[List[(String, String)]]] = {
+    dts.map {
+      case (key, dt) =>
+        val result: ArrayBuffer[List[(String, String)]] = ArrayBuffer.empty
+        dt.cache()
 
-  // TODO: define returning type
-  def calculateDecisionRules(dts: Map[String, DataFrame]): Map[String, Option[DataFrame]] = {
-    for ((key, dt) <- dts) {
+        val ALL_COLUMNS = dt.columns
+        val CONDITION_COLUMNS: ArrayBuffer[String] = ArrayBuffer(ALL_COLUMNS.dropRight(1): _*)
+        val DECISION_COLUMN = key
 
-    }
-    // FIXME: remove dropRight
-    dts.dropRight(2).map { case (key, dt) =>
-      val result = ArrayBuffer.empty[List[(String, String)]]
+        // if degenerated or empty return empty array
+        if (dt.select(DECISION_COLUMN).distinct().count() <= 1)
+          (key, List.empty[List[(String, String)]])
+        else {
 
-      dt.cache()
-      dt.show() // FIXME: remove
+          val dtRows = dt.collect()
 
-      val allCols = dt.columns
-      val conditionCols = allCols.dropRight(1)
+          // calculating decision rule for each row
+          for (dtRow <- dtRows) {
+            val decision = dtRow.getAs[String](DECISION_COLUMN)
+            val conditionCols = CONDITION_COLUMNS.clone()
 
-      val decisionCol = allCols.last
-      // if degenerated or empty return Optional.empty
-      if (dt.select(decisionCol).distinct().count() <= 1)
-        return Map(decisionCol -> Option.empty[DataFrame])
-      // else continue calculations
-      else {
+            var distinctDecisions = 0
+            var decisionRule = ArrayBuffer((DECISION_COLUMN, dtRow.getAs[String](DECISION_COLUMN)))
+            do {
+              // potential columns with their M calculated, format: (M, column, value)
+              val colsWithM = ArrayBuffer.empty[(Long, String, String)]
 
-        val dtRows = dt.collect()
+              // calculating M
+              for (col <- conditionCols) {
+                // N(T)
+                val NT = dtRows.filter(row => row.getAs[String](col) == dtRow.getAs[String](col))
+                val NTCount = NT.length
+                // N(T, a)
+                val NTA = NT.filter(row => row.getAs[String](DECISION_COLUMN) == decision)
+                val NTACount = NTA.length
 
-        // calculating for each row here
-        for (dtRow <- dtRows) {
-          Console.println(s"\nrow: $dtRow")
-          // FIXME: remove
-          val decision = dtRow.getAs[String](decisionCol)
+                // M = N(T), - N(T, a)
+                val M = NTCount - NTACount
+                colsWithM += Tuple3(M, col, dtRow.getAs[String](col))
+              }
+              // order by the descending of value of M and get first item - it is the chosen column
+              val chosenCol = colsWithM.sortWith(_._1 < _._1).head
 
-          // potential columns with their M calculated, format: (M, column, value)
-          val candidates = ArrayBuffer.empty[(Long, String, String)]
-          // calculating M
-          for (col <- conditionCols) {
-            // N(T)
-            val NT = dtRows.filter(row => row.getAs[String](col) == dtRow.getAs[String](col))
-            val NTCount = NT.length
-            // N(T, a)
-            val NTA = NT.filter(row => row.getAs[String](decisionCol) == decision)
-            val NTACount = NTA.length
+              // row result () <- () ^ ... () ^ ()
+              // head - decision
+              // tail - condition
+              decisionRule += Tuple2(chosenCol._2, chosenCol._3)
 
-            // M = N(T), - N(T, a)
-            val M = NTCount - NTACount
-            candidates += Tuple3(M, col, dtRow.getAs[String](col))
+              // create separable subtable for created decision rule and check its decisions
+              val conditions = decisionRule.tail
+              val separableSubtable = GreedyUtils.filterByColumns(dtRows, conditions.toList)
+
+              // prepare for next iteration
+              distinctDecisions = GreedyUtils.countDistinctValuesIn(separableSubtable, DECISION_COLUMN)
+              if (distinctDecisions > 1)
+                conditionCols -= chosenCol._2
+
+            }
+            while (distinctDecisions > 1)
+
+            result += decisionRule.toList
           }
-          // order by the descending of value of M and get first item - it is the chosen column
 
-          val chosenCol = candidates.sortWith(_._1 < _._1).head
-
-          // row result () <- () ^ ... () ^ ()
-          // head - decision
-          // tail - condition
-          val decisionRule = List((decisionCol, dtRow.getAs[String](decisionCol)), (chosenCol._2, chosenCol._3))
-          result += decisionRule
-
-
-          // create separable subtable for created decision rule
-          val conditions = decisionRule.tail
-          val dtFilteredRows = GreedyUtils.filterByColumns(dtRows, conditions)
-
-          // check the number of distinct decision is separable subtable
-          // if greater than 1 then add another condition col
-          var distinctDecisions = GreedyUtils.countDistinctValuesIn(dtFilteredRows, decisionCol)
-
-          // FIXME: remove
-          Console.println("filtered rows")
-          for (row <- dtFilteredRows) {
-            Console.println(row)
-          }
-          println(s"distinctDecisions = $distinctDecisions")
-
-
-          do {
-            // calculations
-            distinctDecisions += 1
-          }
-          while (distinctDecisions > 1)
-
-
-          /** TODO: make it work in loop until subtable is empty or decision is a common decision for table
-            * (all decisions identical identical in  subtable)
-            */
-
+          (key, result.toList)
         }
-
-        //result.foreach(Console.println(_))
-
-
-        // return result as map of Optional value
-        (key, Option.apply(dt))
-      }
     }
   }
 }
