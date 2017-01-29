@@ -1,3 +1,5 @@
+http://logic.mimuw.edu.pl/~rses/RSES_doc_eng.pdf
+
 nile_name.rul
 
 each row:
