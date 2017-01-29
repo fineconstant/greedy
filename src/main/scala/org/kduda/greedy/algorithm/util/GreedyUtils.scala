@@ -43,7 +43,7 @@ object GreedyUtils {
   /**
     * Calculates support for the given decision rule.
     *
-    * @param dtRows       Decision table with transactions to be chacked for support.
+    * @param dtRows       Decision table with transactions to be checked for support.
     * @param decisionRule The decision rule to be checked.
     * @return Same decision rule with appended support so it looks like: (support, [value])(decision, [value])[tail as conditions]
     */
