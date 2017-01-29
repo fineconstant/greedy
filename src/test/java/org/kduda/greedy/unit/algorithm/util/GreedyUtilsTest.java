@@ -65,4 +65,26 @@ public class GreedyUtilsTest extends SpringUnitTest {
 
 		assertThat(result).isEqualTo(2);
 	}
+
+	@Test
+	public void shouldCalculateSupportEqualToOne() {
+		@SuppressWarnings("unchecked")
+		Tuple2<String, String>[] decisionRule = new Tuple2[]{new Tuple2<>("f3", "1")};
+
+		scala.collection.immutable.List<Tuple2<String, String>> result =
+			GreedyUtils.calculateSupport(data, ArrayBufferHelperFactory.of(decisionRule));
+
+		assertThat(result.head()._2).isEqualTo("1");
+	}
+
+	@Test
+	public void shouldCalculateSupportGreaterThanOne() {
+		@SuppressWarnings("unchecked")
+		Tuple2<String, String>[] decisionRule = new Tuple2[]{new Tuple2<>("f3", "0"),new Tuple2<>("f2", "0")};
+
+		scala.collection.immutable.List<Tuple2<String, String>> result =
+			GreedyUtils.calculateSupport(data, ArrayBufferHelperFactory.of(decisionRule));
+
+		assertThat(result.head()._2).isEqualTo("2");
+	}
 }

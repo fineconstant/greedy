@@ -23,7 +23,7 @@ object HeuristicsM extends SparkAware {
           (key, List.empty[List[(String, String)]])
         else {
 
-          val dtRows = dt.collect()
+          var dtRows = dt.collect()
 
           // calculating decision rule for each row
           for (dtRow <- dtRows) {
@@ -52,7 +52,8 @@ object HeuristicsM extends SparkAware {
               // order by the descending of value of M and get first item - it is the chosen column
               val chosenCol = colsWithM.sortWith(_._1 < _._1).head
 
-              // row result () <- () ^ ... () ^ ()
+              // row result (support, value) () <- () ^ ... () ^ ()
+              // head - support
               // head - decision
               // tail - condition
               decisionRule += Tuple2(chosenCol._2, chosenCol._3)
@@ -69,7 +70,9 @@ object HeuristicsM extends SparkAware {
             }
             while (distinctDecisions > 1)
 
-            result += decisionRule.toList
+            val resultWithSupport = GreedyUtils.calculateSupport(dtRows, decisionRule)
+
+            result += resultWithSupport
           }
 
           (key, result.toList)
