@@ -9,3 +9,4 @@ val c = a / b
 c == Float.PositiveInfinity
 c == Float.NegativeInfinity
 
+val d = b / a
