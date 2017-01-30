@@ -2,7 +2,8 @@ package org.kduda.greedy.domain;
 
 public enum GreedyTableTypes {
 	NONE(""),
-	INFOTMATION_SYSTEM("information-system"),
+	DATA("data"),
+	INFORMATION_SYSTEM("information-system"),
 	DECISION_TABLE("decision-table"),
 	RULES("association-rules");
 

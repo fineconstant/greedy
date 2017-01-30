@@ -3,7 +3,7 @@ package org.kduda.greedy.unit.storage;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kduda.greedy.repository.CsvRepository;
+import org.kduda.greedy.repository.data.FileRepository;
 import org.kduda.greedy.unit.SpringUnitTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.embedded.LocalServerPort;
@@ -32,7 +32,7 @@ public class FileStorageTest extends SpringUnitTest {
 	private TestRestTemplate restTemplate;
 
 	@MockBean
-	private CsvRepository storageService;
+	private FileRepository storageService;
 
 	@LocalServerPort
 	private int port;

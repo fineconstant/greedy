@@ -2,12 +2,9 @@ package org.kduda.greedy.controller;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.kduda.greedy.exception.StorageFileNotFoundException;
-import org.kduda.greedy.repository.CsvRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.kduda.greedy.repository.data.FileRepository;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,22 +17,22 @@ import java.io.IOException;
 @Controller
 public class FileUploadController {
 
-	private final CsvRepository csvRepository;
+	private final FileRepository fileRepository;
 
-	public FileUploadController(CsvRepository csvRepository) {
-		this.csvRepository = csvRepository;
+	public FileUploadController(FileRepository fileRepository) {
+		this.fileRepository = fileRepository;
 	}
 
 	@GetMapping("/files")
 	public String listFiles(Model model) throws IOException {
-		model.addAttribute("files", csvRepository.listAll());
+		model.addAttribute("files", fileRepository.listAll());
 		return "uploadForm";
 	}
 
 	@GetMapping("/files/{id:.+}")
 	@ResponseBody
 	public ResponseEntity<Resource> serveFile(@PathVariable String id) {
-		Pair<String, Resource> file = csvRepository.loadResourceById(id);
+		Pair<String, Resource> file = fileRepository.loadResourceById(id);
 		if (file != null) {
 			return ResponseEntity
 				.ok()
@@ -48,7 +45,7 @@ public class FileUploadController {
 	@PostMapping("/files")
 	public String handleFileUpload(@RequestParam("file") MultipartFile file,
 								   RedirectAttributes redirectAttributes) {
-		csvRepository.store(file);
+		fileRepository.store(file);
 		redirectAttributes.addFlashAttribute("message", "You successfully uploaded " + file.getOriginalFilename() + "!");
 
 		return "redirect:/files";

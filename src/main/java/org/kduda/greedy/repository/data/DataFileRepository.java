@@ -1,4 +1,4 @@
-package org.kduda.greedy.repository;
+package org.kduda.greedy.repository.data;
 
 import com.mongodb.gridfs.GridFSDBFile;
 import lombok.NonNull;
@@ -7,8 +7,8 @@ import org.kduda.greedy.domain.FileContentTypes;
 import org.kduda.greedy.domain.GreedyTableTypes;
 import org.kduda.greedy.exception.StorageException;
 import org.kduda.greedy.model.FileModel;
+import org.kduda.greedy.repository.RepositoryUtils;
 import org.kduda.greedy.service.storage.MongoGridFsStorageService;
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,13 +20,12 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-// TODO: refactor when there is decision table or association rule file repository - make it more generic
 @Repository
-public class InfoSystemCsvRepository implements CsvRepository {
+public class DataFileRepository implements FileRepository {
 
 	private final MongoGridFsStorageService storageService;
 
-	public InfoSystemCsvRepository(MongoGridFsStorageService storageService) {
+	public DataFileRepository(MongoGridFsStorageService storageService) {
 		this.storageService = storageService;
 	}
 
@@ -37,7 +36,7 @@ public class InfoSystemCsvRepository implements CsvRepository {
 				throw new StorageException("Failed to store empty file " + file.getOriginalFilename());
 			}
 			Map<String, String> metadata = new HashMap<>();
-			metadata.put("type", GreedyTableTypes.INFOTMATION_SYSTEM.getType());
+			metadata.put("type", GreedyTableTypes.DATA.getType());
 
 			storageService.storeFile(file.getInputStream(), file.getOriginalFilename(), FileContentTypes.CSV.getType(), metadata);
 
@@ -48,7 +47,7 @@ public class InfoSystemCsvRepository implements CsvRepository {
 
 	@Override
 	public List<FileModel> listAll() {
-		return storageService.findFilesByType(GreedyTableTypes.INFOTMATION_SYSTEM.getType())
+		return storageService.findFilesByType(GreedyTableTypes.DATA.getType())
 							 .stream()
 							 .map(file -> new FileModel(file.getFilename(), file.getId().toString()))
 							 .collect(Collectors.toList());
@@ -57,25 +56,13 @@ public class InfoSystemCsvRepository implements CsvRepository {
 	@Override
 	public Pair<String, Resource> loadResourceById(@NonNull String id) {
 		Optional<GridFSDBFile> oFile = storageService.findFileById(id);
-		return loadAsResource(oFile);
+		return RepositoryUtils.loadAsResource(oFile);
 	}
 
 	@Override
 	public Pair<String, Resource> loadResourceByFilename(@NonNull String filename) {
 		Optional<GridFSDBFile> oFile = storageService.findFileByName(filename);
-		return loadAsResource(oFile);
-	}
-
-	private Pair<String, Resource> loadAsResource(Optional<GridFSDBFile> oFile) {
-		Pair<String, Resource> result = null;
-
-		if (oFile.isPresent()) {
-			String filename = oFile.get().getFilename();
-			Resource resource = new InputStreamResource(oFile.get().getInputStream());
-
-			result = Pair.of(filename, resource);
-		}
-		return result;
+		return RepositoryUtils.loadAsResource(oFile);
 	}
 
 	@Override
@@ -90,7 +77,7 @@ public class InfoSystemCsvRepository implements CsvRepository {
 
 	@Override
 	public void deleteAll() {
-		storageService.deleteByType(GreedyTableTypes.INFOTMATION_SYSTEM.getType());
+		storageService.deleteByType(GreedyTableTypes.DATA.getType());
 	}
 
 	@Override

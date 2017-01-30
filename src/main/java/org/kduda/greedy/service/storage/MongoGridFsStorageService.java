@@ -53,7 +53,6 @@ public class MongoGridFsStorageService implements FileStorageService {
 				)));
 	}
 
-
 	@Override
 	public Optional<GridFSDBFile> findFileById(@NonNull String id) {
 		return Optional.ofNullable(
@@ -68,6 +67,14 @@ public class MongoGridFsStorageService implements FileStorageService {
 		return operations.find(
 			query(
 				whereMetaData("type").is(type)
+			));
+	}
+
+	@Override
+	public List<GridFSDBFile> findFilesByParent(String parentId) {
+		return operations.find(
+			query(
+				whereMetaData("parent").is(parentId)
 			));
 	}
 
@@ -92,6 +99,14 @@ public class MongoGridFsStorageService implements FileStorageService {
 		operations.delete(
 			query(
 				whereMetaData("type").is(type)
+			));
+	}
+
+	@Override
+	public void deleteByParent(String parentId) {
+		operations.delete(
+			query(
+				whereMetaData("parent").is(parentId)
 			));
 	}
 }

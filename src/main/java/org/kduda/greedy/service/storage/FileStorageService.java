@@ -2,7 +2,8 @@ package org.kduda.greedy.service.storage;
 
 import com.mongodb.gridfs.GridFSDBFile;
 import com.mongodb.gridfs.GridFSFile;
-import lombok.NonNull;
+
+import javax.annotation.Nonnull;
 
 import java.io.InputStream;
 import java.util.List;
@@ -11,7 +12,7 @@ import java.util.Optional;
 
 public interface FileStorageService {
 
-	Optional<GridFSFile> storeFile(@NonNull InputStream inputStream, @NonNull String filename, String contentType,
+	Optional<GridFSFile> storeFile(@Nonnull InputStream inputStream, @Nonnull String filename, String contentType,
 								   Map<String, String> metadata);
 
 	Optional<GridFSDBFile> findFileByName(String name);
@@ -20,9 +21,13 @@ public interface FileStorageService {
 
 	List<? extends GridFSFile> findFilesByType(String type);
 
+	List<? extends GridFSFile> findFilesByParent(String parentId);
+
 	void deleteById(String id);
 
 	void deleteByFilename(String filename);
 
 	void deleteByType(String type);
+
+	void deleteByParent(String parentId);
 }
