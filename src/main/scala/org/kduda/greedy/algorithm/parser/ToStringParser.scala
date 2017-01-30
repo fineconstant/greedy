@@ -19,13 +19,13 @@ object ToStringParser {
 
         val formatted = conditions.map {
           case (attr, value) =>
-            s"($attr={$value})"
+            s"($attr=$value)"
         }
 
         builder.append(formatted.mkString("&"))
 
         builder.append("=>")
-        builder.append(s"(${decision._1}={${decision._2}}[$support])")
+        builder.append(s"(${decision._1}=${decision._2}[$support])")
         builder.append(s" $support\n")
       }
     }

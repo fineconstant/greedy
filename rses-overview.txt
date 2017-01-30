@@ -3,7 +3,7 @@ http://logic.mimuw.edu.pl/~rses/RSES_doc_eng.pdf
 nile_name.rul
 
 each row:
-    (attribute_1={value_attr_1})&(attribute_2={value_attr_2})=>(decision_attribute={decision_value[support]}) support
+    (attribute_1=value_attr_1)&(attribute_2=value_attr_2)=>(decision_attribute=decision_value[support]) support
 
 By supporting we understand the objects in training data that match at the conditional part of rule
 and have the decision identical with that suggested by rule.
