@@ -27,6 +27,7 @@ public class HeuristicsMTest extends SpringUnitTest {
 
 	private scala.collection.immutable.Map<String, Dataset<Row>> dtsMapped;
 
+	@SuppressWarnings("Duplicates")
 	@Before
 	public void setUp() throws IOException {
 		ClassPathResource resource = new ClassPathResource("/files/paper-sample.csv", getClass());
