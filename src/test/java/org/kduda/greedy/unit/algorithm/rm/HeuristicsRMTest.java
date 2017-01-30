@@ -53,4 +53,20 @@ public class HeuristicsRMTest extends SpringUnitTest {
 
 		assertThat(result).isNotNull();
 	}
+
+	@Test
+	public void shouldReturnMapWith3Elements() {
+		scala.collection.immutable.Map<String, List<List<Tuple2<String, String>>>> result = HeuristicsRM.calculateDecisionRules(dtsMapped);
+
+		assertThat(result.size()).isEqualTo(3);
+	}
+
+	@Test
+	public void shouldReturnValidRules() {
+		scala.collection.immutable.Map<String, List<List<Tuple2<String, String>>>> result = HeuristicsRM.calculateDecisionRules(dtsMapped);
+
+		assertThat(result.get("f3").get().size()).isEqualTo(0);
+		assertThat(result.get("f2").get().size()).isEqualTo(3);
+		assertThat(result.get("f1").get().size()).isEqualTo(2);
+	}
 }

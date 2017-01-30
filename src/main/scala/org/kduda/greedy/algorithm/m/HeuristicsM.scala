@@ -23,11 +23,11 @@ object HeuristicsM extends SparkAware {
           (key, List.empty[List[(String, String)]])
         else {
 
-          // TODO: sprawdzic czy generowane z glownej tablicy z z podtablic tworzonych potem nizej
           var dtRows = dt.collect()
 
           // calculating decision rule for each row
           for (dtRow <- dtRows) {
+
             val decision = dtRow.getAs[String](DECISION_COLUMN)
             val conditionCols = CONDITION_COLUMNS.clone()
 
@@ -48,6 +48,7 @@ object HeuristicsM extends SparkAware {
 
                 // M = N(T), - N(T, a)
                 val M = NTCount - NTACount
+
                 colsWithM += Tuple3(M, col, dtRow.getAs[String](col))
               }
               // order by the descending of value of M and get first item - it is the chosen column
@@ -65,8 +66,11 @@ object HeuristicsM extends SparkAware {
 
               // prepare for next iteration
               distinctDecisions = GreedyUtils.countDistinctValuesIn(separableSubtable, DECISION_COLUMN)
-              if (distinctDecisions > 1)
+              if (distinctDecisions > 1) {
                 conditionCols -= chosenCol._2
+                // FIXME: if calculating with main decision table - remove next line
+                dtRows = GreedyUtils.filterByColumns(dtRows, List((chosenCol._2, chosenCol._3)))
+              }
 
             }
             while (distinctDecisions > 1)

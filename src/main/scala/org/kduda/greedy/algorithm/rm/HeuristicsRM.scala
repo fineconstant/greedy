@@ -24,7 +24,7 @@ object HeuristicsRM extends DecisionRulesCalculator with SparkAware {
           (key, List.empty[List[(String, String)]])
         else {
 
-          val dtRows = dt.collect()
+          var dtRows = dt.collect()
 
           // calculating decision rule for each row
           for (dtRow <- dtRows) {
@@ -35,20 +35,21 @@ object HeuristicsRM extends DecisionRulesCalculator with SparkAware {
             var decisionRule = ArrayBuffer((DECISION_COLUMN, dtRow.getAs[String](DECISION_COLUMN)))
             do {
               // potential columns with their M calculated, format: (M, column, value)
-              val colsWithM = ArrayBuffer.empty[(Long, String, String)]
+              val colsWithM = ArrayBuffer.empty[(Float, String, String)]
 
               // calculating M
               for (col <- conditionCols) {
                 // N(T)
                 val NT = dtRows.filter(row => row.getAs[String](col) == dtRow.getAs[String](col))
-                val NTCount = NT.length
+                val NTCount: Float = NT.length
                 // N(T, a)
                 val NTA = NT.filter(row => row.getAs[String](DECISION_COLUMN) == decision)
-                val NTACount = NTA.length
+                val NTACount: Float = NTA.length
 
-                // M = N(T), - N(T, a)
-                val M = NTCount - NTACount
-                colsWithM += Tuple3(M, col, dtRow.getAs[String](col))
+                // RM = (N(T), - N(T, a)) / N(T)
+                val RM = (NTCount - NTACount) / NTCount
+
+                colsWithM += Tuple3(RM, col, dtRow.getAs[String](col))
               }
               // order by the descending of value of M and get first item - it is the chosen column
               val chosenCol = colsWithM.sortWith(_._1 < _._1).head
@@ -65,8 +66,11 @@ object HeuristicsRM extends DecisionRulesCalculator with SparkAware {
 
               // prepare for next iteration
               distinctDecisions = GreedyUtils.countDistinctValuesIn(separableSubtable, DECISION_COLUMN)
-              if (distinctDecisions > 1)
+              if (distinctDecisions > 1) {
                 conditionCols -= chosenCol._2
+                // FIXME: if calculating with main decision table - remove next line
+                dtRows = GreedyUtils.filterByColumns(dtRows, List((chosenCol._2, chosenCol._3)))
+              }
 
             }
             while (distinctDecisions > 1)
