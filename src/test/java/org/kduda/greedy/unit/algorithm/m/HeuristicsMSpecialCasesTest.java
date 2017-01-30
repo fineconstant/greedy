@@ -3,7 +3,7 @@ package org.kduda.greedy.unit.algorithm.m;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.junit.Test;
-import org.kduda.greedy.algorithm.HeuristicsM;
+import org.kduda.greedy.algorithm.m.HeuristicsM;
 import org.kduda.greedy.spark.reader.csv.SparkCsvReader;
 import org.kduda.greedy.unit.SpringUnitTest;
 import org.kduda.greedy.unit.algorithm.DecisionTableUtils;

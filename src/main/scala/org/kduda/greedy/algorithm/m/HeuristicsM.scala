@@ -1,4 +1,4 @@
-package org.kduda.greedy.algorithm
+package org.kduda.greedy.algorithm.m
 
 import org.apache.spark.sql.DataFrame
 import org.kduda.greedy.algorithm.util.GreedyUtils
