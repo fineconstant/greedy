@@ -51,7 +51,8 @@ object HeuristicsM extends SparkAware {
 
                 colsWithM += Tuple3(M, col, dtRow.getAs[String](col))
               }
-              // order by the descending of value of M and get first item - it is the chosen column
+              // order by the ascending of value of M and get first item - it is the chosen column
+              // minimizes M
               val chosenCol = colsWithM.sortWith(_._1 < _._1).head
 
               // row result (support, value) () <- () ^ ... () ^ ()

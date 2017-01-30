@@ -34,7 +34,7 @@ object HeuristicsMaxCov extends DecisionRulesCalculator with SparkAware {
             var distinctDecisions = 0
             var decisionRule = ArrayBuffer((DECISION_COLUMN, dtRow.getAs[String](DECISION_COLUMN)))
             do {
-              // potential columns with their M calculated, format: (M, column, value)
+              // potential columns with their alpha calculated, format: (alpha, column, value)
               val colsWithM = ArrayBuffer.empty[(Float, String, String)]
 
               // calculating beta and alpha
@@ -62,7 +62,8 @@ object HeuristicsMaxCov extends DecisionRulesCalculator with SparkAware {
                 }
 
               }
-              // order by the descending of value of M and get first item - it is the chosen column
+              // order by the ascending of value of alpha and get first item - it is the chosen column
+              // minimizes alpha
               val chosenCol = colsWithM.sortWith(_._1 < _._1).head
 
               // row result (support, value) () <- () ^ ... () ^ ()
