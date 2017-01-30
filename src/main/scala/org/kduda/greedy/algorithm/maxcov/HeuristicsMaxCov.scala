@@ -9,7 +9,6 @@ import scala.collection.mutable.ArrayBuffer
 
 object HeuristicsMaxCov extends DecisionRulesCalculator with SparkAware {
 
-  // TODO: implement maxCov
   override def calculateDecisionRules(dts: Map[String, DataFrame]): Map[String, List[List[(String, String)]]] = {
     dts.map {
       case (key, dt) =>
@@ -38,19 +37,30 @@ object HeuristicsMaxCov extends DecisionRulesCalculator with SparkAware {
               // potential columns with their M calculated, format: (M, column, value)
               val colsWithM = ArrayBuffer.empty[(Float, String, String)]
 
-              // calculating M
+              // calculating beta and alpha
               for (col <- conditionCols) {
-                // N(T)
-                val NT = dtRows.filter(row => row.getAs[String](col) == dtRow.getAs[String](col))
-                val NTCount: Float = NT.length
-                // N(T, a)
-                val NTA = NT.filter(row => row.getAs[String](DECISION_COLUMN) == decision)
-                val NTACount: Float = NTA.length
+                // beta = M(T, a) - M(T(col), a)             previous - actual
+                // M(T, decision) = N(T) - N(T, a)           previous
+                val NT: Float = dtRows.length
+                val NTA: Float = dtRows.count(row => row.getAs[String](DECISION_COLUMN) == decision)
+                val MTA: Float = NT - NTA
 
-                // RM = (N(T), - N(T, a)) / N(T)
-                val RM = (NTCount - NTACount) / NTCount
+                // M(T(col), a)   = N(T(col)) - N(T(col), a) actual
+                val NTCRows = dtRows.filter(row => row.getAs[String](col) == dtRow.getAs[String](col))
+                val NTC: Float = NTCRows.length
+                val NTCARows = NTCRows.filter(row => row.getAs[String](DECISION_COLUMN) == decision)
+                val NTCA: Float = NTCARows.length
+                val MTCA = NTC - NTCA
 
-                colsWithM += Tuple3(RM, col, dtRow.getAs[String](col))
+                val beta = MTA - MTCA
+
+                // if beta > 0
+                // alpha = N(T, a) - N(T(col), a)            previous - actual
+                if (beta > 0) {
+                  val alpha = NTA - NTCA
+                  colsWithM += Tuple3(alpha, col, dtRow.getAs[String](col))
+                }
+
               }
               // order by the descending of value of M and get first item - it is the chosen column
               val chosenCol = colsWithM.sortWith(_._1 < _._1).head

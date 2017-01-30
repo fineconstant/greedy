@@ -37,7 +37,7 @@ object HeuristicsRM extends DecisionRulesCalculator with SparkAware {
               // potential columns with their M calculated, format: (M, column, value)
               val colsWithM = ArrayBuffer.empty[(Float, String, String)]
 
-              // calculating M
+              // calculating RM
               for (col <- conditionCols) {
                 // N(T)
                 val NT = dtRows.filter(row => row.getAs[String](col) == dtRow.getAs[String](col))
@@ -47,7 +47,9 @@ object HeuristicsRM extends DecisionRulesCalculator with SparkAware {
                 val NTACount: Float = NTA.length
 
                 // RM = (N(T), - N(T, a)) / N(T)
-                val RM = (NTCount - NTACount) / NTCount
+                var RM = (NTCount - NTACount) / NTCount
+                if (RM == Float.PositiveInfinity)
+                  RM = 0.0F
 
                 colsWithM += Tuple3(RM, col, dtRow.getAs[String](col))
               }
