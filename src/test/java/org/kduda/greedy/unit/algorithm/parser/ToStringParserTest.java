@@ -65,4 +65,17 @@ public class ToStringParserTest extends SpringUnitTest {
 
 		assertThat(actual).isEqualTo(expected);
 	}
+
+	@Test
+	public void shouldBuildStringCSV() throws IOException {
+		scala.collection.immutable.Map<String, List<List<Tuple2<String, String>>>> rules = HeuristicsM.calculateDecisionRules(dtsMapped);
+
+		String actual = ToStringParser.buildStringCSV(rules);
+
+		ClassPathResource resource = new ClassPathResource("/files/paper-sample-rules.csv", getClass());
+		byte[] encoded = Files.readAllBytes(Paths.get(resource.getURI()));
+		String expected = new String(encoded, StandardCharsets.UTF_8);
+
+		assertThat(actual).isEqualTo(expected);
+	}
 }
