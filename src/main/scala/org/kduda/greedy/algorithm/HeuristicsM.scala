@@ -6,9 +6,9 @@ import org.kduda.greedy.spark.generic.SparkAware
 
 import scala.collection.mutable.ArrayBuffer
 
-object HeuristicsM extends DecisionRulesCalculator with SparkAware {
+object HeuristicsM extends SparkAware {
 
-  override def calculateDecisionRules(dts: Map[String, DataFrame]): Map[String, List[List[(String, String)]]] = {
+  def calculateDecisionRules(dts: Map[String, DataFrame]): Map[String, List[List[(String, String)]]] = {
     dts.map {
       case (key, dt) =>
         val result: ArrayBuffer[List[(String, String)]] = ArrayBuffer.empty
@@ -23,6 +23,7 @@ object HeuristicsM extends DecisionRulesCalculator with SparkAware {
           (key, List.empty[List[(String, String)]])
         else {
 
+          // TODO: sprawdzic czy generowane z glownej tablicy z z podtablic tworzonych potem nizej
           var dtRows = dt.collect()
 
           // calculating decision rule for each row

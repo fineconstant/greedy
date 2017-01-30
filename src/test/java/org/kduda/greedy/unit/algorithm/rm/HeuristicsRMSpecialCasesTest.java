@@ -1,9 +1,10 @@
-package org.kduda.greedy.unit.algorithm.m;
+package org.kduda.greedy.unit.algorithm.rm;
 
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.junit.Test;
 import org.kduda.greedy.algorithm.HeuristicsM;
+import org.kduda.greedy.algorithm.HeuristicsRM;
 import org.kduda.greedy.spark.reader.csv.SparkCsvReader;
 import org.kduda.greedy.unit.SpringUnitTest;
 import org.kduda.greedy.unit.algorithm.DecisionTableUtils;
@@ -15,7 +16,7 @@ import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class HeuristicsMSpecialCasesTest extends SpringUnitTest {
+public class HeuristicsRMSpecialCasesTest extends SpringUnitTest {
 
 	@Autowired private SparkCsvReader sparkCsvReader;
 
@@ -24,7 +25,7 @@ public class HeuristicsMSpecialCasesTest extends SpringUnitTest {
 		scala.collection.immutable.Map<String, Dataset<Row>> dtsMapped =
 			DecisionTableUtils.readTestFileAsDecisionTable(sparkCsvReader, getClass(), "paper-sample.csv");
 
-		scala.collection.immutable.Map<String, List<List<Tuple2<String, String>>>> result = HeuristicsM.calculateDecisionRules(dtsMapped);
+		scala.collection.immutable.Map<String, List<List<Tuple2<String, String>>>> result = HeuristicsRM.calculateDecisionRules(dtsMapped);
 
 		assertThat(result).isNotNull();
 		assertThat(result.size()).isEqualTo(1);
@@ -36,10 +37,11 @@ public class HeuristicsMSpecialCasesTest extends SpringUnitTest {
 		scala.collection.immutable.Map<String, Dataset<Row>> dtsMapped =
 			DecisionTableUtils.readTestFileAsDecisionTable(sparkCsvReader, getClass(), "empty.csv");
 
-		scala.collection.immutable.Map<String, List<List<Tuple2<String, String>>>> result = HeuristicsM.calculateDecisionRules(dtsMapped);
+		scala.collection.immutable.Map<String, List<List<Tuple2<String, String>>>> result = HeuristicsRM.calculateDecisionRules(dtsMapped);
 
 		assertThat(result).isNotNull();
 		assertThat(result.size()).isEqualTo(1);
 		assertThat(result.get("f3").get().size()).isEqualTo(0);
 	}
 }
+
