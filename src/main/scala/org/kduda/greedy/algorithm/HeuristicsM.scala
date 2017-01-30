@@ -6,9 +6,9 @@ import org.kduda.greedy.spark.generic.SparkAware
 
 import scala.collection.mutable.ArrayBuffer
 
-object HeuristicsM extends SparkAware {
+object HeuristicsM extends DecisionRulesCalculator with SparkAware {
 
-  def calculateDecisionRules(dts: Map[String, DataFrame]): Map[String, List[List[(String, String)]]] = {
+  override def calculateDecisionRules(dts: Map[String, DataFrame]): Map[String, List[List[(String, String)]]] = {
     dts.map {
       case (key, dt) =>
         val result: ArrayBuffer[List[(String, String)]] = ArrayBuffer.empty
