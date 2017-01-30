@@ -40,7 +40,6 @@ public class MongoSparkIT extends SpringIntegrationTest {
 
 		Resource resource = new ClassPathResource("/files/" + FILE_NAME);
 
-
 		Optional<GridFSFile> oGridFSFile = storageService.storeFile(resource.getInputStream(), FILE_NAME, FileContentTypes.CSV
 			.getType(), metadata);
 		oGridFSFile.ifPresent(file -> gridFSFile = file);

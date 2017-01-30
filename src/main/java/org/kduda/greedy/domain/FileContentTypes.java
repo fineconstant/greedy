@@ -1,7 +1,8 @@
 package org.kduda.greedy.domain;
 
 public enum FileContentTypes {
-	CSV("text/csv");
+	CSV("text/csv"),
+	RSES("text/plain");
 
 	private final String type;
 
