@@ -2,6 +2,7 @@
 
 ### Output
 * [RSES](http://logic.mimuw.edu.pl/~rses/RSES_doc_eng.pdf) rule set data file format (`.rul`)
+* CSV files (`.csv`)
 
 #### Development
 * To enable Spring Boot Live Reload for Scala in IntelliJ:
