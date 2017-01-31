@@ -13,6 +13,9 @@ spring:
     name: greedy
   main:
     banner-mode: 'OFF'
+  mvc:
+    favicon:
+      enabled: true
 endpoints: # disable actuator in production
   actuator:
     enabled: false
