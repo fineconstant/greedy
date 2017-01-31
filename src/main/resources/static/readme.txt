@@ -1,0 +1,1 @@
+Static content here (scripts, images etc.).
