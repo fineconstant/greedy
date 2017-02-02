@@ -51,7 +51,7 @@ class SparkMongo extends SparkMongoService {
       writtenBytes = gridFSDBFile.writeTo(storageFile)
     catch {
       case e: IOException =>
-        log.error("Could write to file:" + storageFile.getAbsolutePath, e)
+        log.error("Could not write to file:" + storageFile.getAbsolutePath, e)
     }
     log.info("Written " + writtenBytes + " bytes into " + storageFile.getAbsolutePath)
   }

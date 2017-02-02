@@ -6,10 +6,8 @@ import org.kduda.greedy.repository.rules.RulesRepository;
 import org.kduda.greedy.service.exploration.ExplorationService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class ExploreController {
@@ -35,6 +33,15 @@ public class ExploreController {
 	public String handleExploreRequest(@PathVariable("id") String id, @ModelAttribute ExploreRequestModel requestModel) {
 		explorationService.explore(id, requestModel);
 
-		return "redirect:/";
+		return "redirect:/explore/" + id;
+	}
+
+	@DeleteMapping("/explore/{parentId}/{id:.+}")
+	public String deleteFile(@PathVariable String parentId, @PathVariable String id, RedirectAttributes redirectAttributes) {
+		fileRepository.deleteById(id);
+
+		redirectAttributes.addFlashAttribute("message", "Data file deleted successfully!");
+
+		return "redirect:/explore/" + parentId;
 	}
 }

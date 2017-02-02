@@ -80,7 +80,6 @@ object HeuristicsLog extends DecisionRulesCalculator with SparkAware {
               distinctDecisions = GreedyUtils.countDistinctValuesIn(separableSubtable, DECISION_COLUMN)
               if (distinctDecisions > 1) {
                 conditionCols -= chosenCol._2
-                // FIXME: if calculating with main decision table - remove next line
                 dtRows = GreedyUtils.filterByColumns(dtRows, List((chosenCol._2, chosenCol._3)))
               }
 

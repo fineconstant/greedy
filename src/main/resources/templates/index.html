@@ -66,8 +66,6 @@
                     </tr>
 
                     <!--/*@thymesVar id="files" type="java.util.List<org.kduda.greedy.model.FileModel>"*/-->
-                    <!--/*@thymesVar id="name" type="java.lang.String"*/-->
-                    <!--/*@thymesVar id="id" type="java.lang.Integer"*/-->
                     <tr th:each=" file, id : ${files}">
                         <td>
                             <span th:text="${id.count}"></span>
@@ -75,23 +73,27 @@
 
                         <td>
                             <button class="btn btn-default">
+                                <!--/*@thymesVar id="file" type="org.kduda.greedy.model.FileModel"*/-->
                                 <span th:text="${file.name}"></span>
                             </button>
                         </td>
 
                         <td>
+                            <!--/*@thymesVar id="file" type="org.kduda.greedy.model.FileModel"*/-->
                             <a class="btn btn-success" th:href="@{'/explore/{id}'(id=${file.id})}">
                                 <span class="glyphicon glyphicon-tasks" aria-hidden="true"></span> Explore
                             </a>
                         </td>
 
                         <td>
+                            <!--/*@thymesVar id="file" type="org.kduda.greedy.model.FileModel"*/-->
                             <a class="btn btn-primary" th:href="@{'/file/{id}'(id=${file.id})}">
                                 <span class="glyphicon glyphicon-floppy-save" aria-hidden="true"></span> Download
                             </a>
                         </td>
 
                         <td>
+                            <!--/*@thymesVar id="file" type="org.kduda.greedy.model.FileModel"*/-->
                             <form action="#" th:action="@{'/file/{id}'(id=${file.id})}" th:method="delete">
                                 <input type="hidden" name="_method" value="delete"/>
                                 <button class="btn btn-danger" type="submit" id="submitButton">

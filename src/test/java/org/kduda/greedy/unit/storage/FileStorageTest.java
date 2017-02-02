@@ -43,10 +43,10 @@ public class FileStorageTest extends SpringUnitTest {
 
 		MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
 		map.add("file", resource);
-		ResponseEntity<String> response = restTemplate.postForEntity("/files", map, String.class);
+		ResponseEntity<String> response = restTemplate.postForEntity("/file", map, String.class);
 
 		assertThat(response.getStatusCode()).isEqualByComparingTo(HttpStatus.FOUND);
-		assertThat(response.getHeaders().getLocation().toString()).startsWith("http://localhost" + "/files");
+		assertThat(response.getHeaders().getLocation().toString()).startsWith("http://localhost" + "/");
 		then(storageService).should().store(any(MultipartFile.class));
 	}
 
@@ -56,7 +56,7 @@ public class FileStorageTest extends SpringUnitTest {
 		given(storageService.loadResourceById("10"))
 			.willReturn(Pair.of(resource.getFilename(), resource));
 
-		ResponseEntity<String> response = restTemplate.getForEntity("/files/{id}", String.class,
+		ResponseEntity<String> response = restTemplate.getForEntity("/file/{id}", String.class,
 																	"10");
 
 		assertThat(response.getStatusCodeValue()).isEqualTo(200);

@@ -34,7 +34,7 @@ public class FileStorageMvcUnitTest extends SpringUnitTest {
 		given(fileRepository.listAll())
 			.willReturn(Arrays.asList(new FileModel("first.txt", "1"), new FileModel("second.txt", "2")));
 
-		mvc.perform(get("/files"))
+		mvc.perform(get("/"))
 		   .andExpect(status().isOk())
 		   .andExpect(model().attribute("files",
 										Matchers.contains(new FileModel("first.txt", "1"), new FileModel("second.txt", "2"))
@@ -45,9 +45,9 @@ public class FileStorageMvcUnitTest extends SpringUnitTest {
 	public void shouldSaveUploadedFile() throws Exception {
 		MockMultipartFile multipartFile =
 			new MockMultipartFile("file", "test.txt", "text/plain", "Storage Tests".getBytes());
-		mvc.perform(fileUpload("/files").file(multipartFile))
+		mvc.perform(fileUpload("/file").file(multipartFile))
 		   .andExpect(status().isFound())
-		   .andExpect(header().string("Location", "/files"));
+		   .andExpect(header().string("Location", "/"));
 
 		then(this.fileRepository).should().store(multipartFile);
 	}
@@ -61,7 +61,7 @@ public class FileStorageMvcUnitTest extends SpringUnitTest {
 		given(fileRepository.loadResourceById("10"))
 			.willThrow(StorageFileNotFoundException.class);
 
-		mvc.perform(get("/files/test.txt"))
+		mvc.perform(get("/file/test.txt"))
 		   .andExpect(status().isNotFound());
 	}
 

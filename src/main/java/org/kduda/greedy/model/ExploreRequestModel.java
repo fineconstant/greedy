@@ -3,6 +3,7 @@ package org.kduda.greedy.model;
 public class ExploreRequestModel {
 	private String heuristics;
 	private String type;
+	private String output;
 
 	public String getHeuristics() {
 		return heuristics;
@@ -20,11 +21,20 @@ public class ExploreRequestModel {
 		this.type = type;
 	}
 
+	public String getOutput() {
+		return output;
+	}
+
+	public void setOutput(String output) {
+		this.output = output;
+	}
+
 	@Override
 	public String toString() {
 		return "ExploreRequestModel{" +
 			"heuristics='" + heuristics + '\'' +
 			", type='" + type + '\'' +
+			", output='" + output + '\'' +
 			'}';
 	}
 }

@@ -19,7 +19,6 @@ object DecisionTableFactory extends SparkAware {
     * @return ArrayBuffer containing cashed DataFrames, each of them is a decision table.
     */
   def extractDecisionTables(is: DataFrame): Array[DataFrame] = {
-    is.cache()
     val isColumns = is.columns
     val dtsColumns = isColumns.map(
       col => {
@@ -33,7 +32,6 @@ object DecisionTableFactory extends SparkAware {
     val dts = dtsColumns.map {
       dtCols => is.select(dtCols.head, dtCols.drop(1): _*)
     }
-    is.unpersist()
 
     dts
   }
