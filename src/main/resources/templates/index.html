@@ -78,21 +78,21 @@
                             </button>
                         </td>
 
-                        <td>
+                        <td class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
                             <!--/*@thymesVar id="file" type="org.kduda.greedy.model.FileModel"*/-->
                             <a class="btn btn-success" th:href="@{'/explore/{id}'(id=${file.id})}">
                                 <span class="glyphicon glyphicon-tasks" aria-hidden="true"></span> Explore
                             </a>
                         </td>
 
-                        <td>
+                        <td class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
                             <!--/*@thymesVar id="file" type="org.kduda.greedy.model.FileModel"*/-->
                             <a class="btn btn-primary" th:href="@{'/file/{id}'(id=${file.id})}">
                                 <span class="glyphicon glyphicon-floppy-save" aria-hidden="true"></span> Download
                             </a>
                         </td>
 
-                        <td>
+                        <td class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
                             <!--/*@thymesVar id="file" type="org.kduda.greedy.model.FileModel"*/-->
                             <form action="#" th:action="@{'/file/{id}'(id=${file.id})}" th:method="delete">
                                 <input type="hidden" name="_method" value="delete"/>

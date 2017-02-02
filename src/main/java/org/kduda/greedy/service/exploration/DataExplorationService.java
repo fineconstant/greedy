@@ -4,8 +4,12 @@ import org.apache.commons.io.IOUtils;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.kduda.greedy.algorithm.DecisionTableFactory;
+import org.kduda.greedy.algorithm.log.HeuristicsLog;
 import org.kduda.greedy.algorithm.m.HeuristicsM;
+import org.kduda.greedy.algorithm.maxcov.HeuristicsMaxCov;
 import org.kduda.greedy.algorithm.parser.ToStringParser;
+import org.kduda.greedy.algorithm.poly.HeuristicsPoly;
+import org.kduda.greedy.algorithm.rm.HeuristicsRM;
 import org.kduda.greedy.domain.FileContentTypes;
 import org.kduda.greedy.model.ExploreRequestModel;
 import org.kduda.greedy.model.FileModel;
@@ -27,6 +31,10 @@ public class DataExplorationService implements ExplorationService {
 	private final RulesRepository rulesRepository;
 	private final FileRepository fileRepository;
 
+	private String fileFormat;
+	private String heuristics;
+	private String contentType;
+
 	public DataExplorationService(SparkMongoService sparkMongo, RulesRepository rulesRepository, FileRepository fileRepository) {
 		this.sparkMongo = sparkMongo;
 		this.rulesRepository = rulesRepository;
@@ -34,33 +42,84 @@ public class DataExplorationService implements ExplorationService {
 	}
 
 	@Override
-	public void explore(String id, ExploreRequestModel requestModel) {
+	public void exploreAndSave(String id, ExploreRequestModel exploreDetails) {
+		String fileName = getFileName(id);
 		Dataset<Row> csv = sparkMongo.readCsvById(id);
 
+		Dataset<Row>[] dts = prepareData(csv, exploreDetails);
+
+		Dataset<Row>[] dtsConsistent = DecisionTableFactory.removeInconsistenciesMCD(dts);
+		Map<String, Dataset<Row>> dtsMapped = DecisionTableFactory.createMapOf(dtsConsistent);
+
+		Map<String, List<List<Tuple2<String, String>>>> rules = exploreWithHeuristics(dtsMapped, exploreDetails);
+
+		String rulesString = buildStringOutput(rules, exploreDetails);
+
+		persist(rulesString, fileName, id);
+	}
+
+	private String getFileName(String id) {
+		FileModel fileModel = fileRepository.listById(id);
+		return fileModel.getName().split("\\.")[0];
+	}
+
+	private Dataset<Row>[] prepareData(Dataset<Row> csv, ExploreRequestModel exploreDetails) {
 		Dataset<Row>[] dt;
 
-		if ("is".equals(requestModel.getType()))
+		if ("is".equals(exploreDetails.getType()))
 			dt = DecisionTableFactory.extractDecisionTables(csv);
 		else
 			//noinspection unchecked
 			dt = new Dataset[]{csv};
 
-		Dataset<Row>[] dtConsistent = DecisionTableFactory.removeInconsistenciesMCD(dt);
-		Map<String, Dataset<Row>> dtMapped = DecisionTableFactory.createMapOf(dtConsistent);
-		Map<String, List<List<Tuple2<String, String>>>> rules = HeuristicsM.calculateDecisionRules(dtMapped);
+		return dt;
+	}
 
-		String result;
+	private Map<String, List<List<Tuple2<String, String>>>> exploreWithHeuristics(Map<String, Dataset<Row>> dtsMapped,
+																				  ExploreRequestModel exploreDetails) {
+		switch (exploreDetails.getHeuristics()) {
+			case "m":
+				heuristics = "m";
+				return HeuristicsM.calculateDecisionRules(dtsMapped);
+			case "rm":
+				heuristics = "rm";
+				return HeuristicsRM.calculateDecisionRules(dtsMapped);
+			case "maxCov":
+				heuristics = "maxCov";
+				return HeuristicsMaxCov.calculateDecisionRules(dtsMapped);
+			case "poly":
+				heuristics = "poly";
+				return HeuristicsPoly.calculateDecisionRules(dtsMapped);
+			case "log":
+				heuristics = "log";
+				return HeuristicsLog.calculateDecisionRules(dtsMapped);
+			default:
+				heuristics = "m";
+				return HeuristicsM.calculateDecisionRules(dtsMapped);
+		}
+	}
 
-		if ("csv".equals(requestModel.getOutput()))
-			result = ToStringParser.buildStringCSV(rules);
-		else
-			result = ToStringParser.buildStringRSES(rules);
+	private String buildStringOutput(Map<String, List<List<Tuple2<String, String>>>> rules, ExploreRequestModel exploreDetails) {
+		switch (exploreDetails.getOutput()) {
+			case "csv":
+				fileFormat = ".csv";
+				contentType = FileContentTypes.CSV.getType();
+				return ToStringParser.buildStringCSV(rules);
+			case "rses":
+				fileFormat = ".rul";
+				contentType = FileContentTypes.RSES.getType();
+				return ToStringParser.buildStringRSES(rules);
+			default:
+				fileFormat = ".csv";
+				contentType = FileContentTypes.CSV.getType();
+				return ToStringParser.buildStringCSV(rules);
+		}
+	}
 
-		FileModel fileModel = fileRepository.listById(id);
-		String fileName = fileModel.getName().split("\\.")[0];
+	private void persist(String rulesString, String fileName, String id) {
+		String finalName = fileName + "-rules-" + heuristics + fileFormat;
+		InputStream stream = IOUtils.toInputStream(rulesString, StandardCharsets.UTF_8);
 
-		InputStream stream = IOUtils.toInputStream(result, StandardCharsets.UTF_8);
-		rulesRepository.store(stream, fileName + "-rules-m.csv", id, FileContentTypes.CSV.getType());
-
+		rulesRepository.store(stream, finalName, id, contentType);
 	}
 }

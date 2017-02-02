@@ -30,8 +30,8 @@ public class ExploreController {
 	}
 
 	@PostMapping("/explore/{id}")
-	public String handleExploreRequest(@PathVariable("id") String id, @ModelAttribute ExploreRequestModel requestModel) {
-		explorationService.explore(id, requestModel);
+	public String handleExploreRequest(@PathVariable("id") String id, @ModelAttribute ExploreRequestModel exploreDetails) {
+		explorationService.exploreAndSave(id, exploreDetails);
 
 		return "redirect:/explore/" + id;
 	}
