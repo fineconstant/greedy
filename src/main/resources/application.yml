@@ -21,7 +21,8 @@ endpoints: # disable actuator in production
     enabled: false
 logging:
   level:
-    root: error
+#    root: error
+    root: info
 
 ---
 
