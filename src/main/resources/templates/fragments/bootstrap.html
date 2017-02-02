@@ -1,0 +1,13 @@
+<html xmlns:th="http://www.thymeleaf.org">
+
+<div th:fragment="bootstrap-css">
+    <link rel="stylesheet" href="/webjars/bootstrap/css/bootstrap.min.css"/>
+</div>
+
+<div th:fragment="bootstrap-js">
+    <script th:replace="fragments/jquery :: jquery"></script>
+    <script src="/webjars/bootstrap/js/bootstrap.js"></script>
+    <script src="/webjars/bootstrap/js/alert.js"></script>
+</div>
+
+</html>

@@ -1,0 +1,112 @@
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Greedy algorithms - data index</title>
+    <link th:replace="fragments/bootstrap :: bootstrap-css"/>
+    <link rel="stylesheet" th:href="@{/styles/index.css}"/>
+</head>
+
+<body class="container">
+<div class="header" th:include="fragments/header :: indexHeader"></div>
+
+<div class="messages-wrapper">
+    <!--/*@thymesVar id="message" type="java.lang.String"*/-->
+    <div th:if="${message}" class="alert alert-info alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        <div th:text="${message}"></div>
+    </div>
+</div>
+
+<div class="file-uploader-wrapper">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h1 class="panel-title">Upload new data file</h1>
+        </div>
+
+        <div class="panel-body">
+            <form class="form-inline" method="POST" enctype="multipart/form-data" action="/file">
+                <div class="form-group">
+                    <label for="file-input">File</label>
+                    <input class="file-input" id="file-input" type="file" name="file"/>
+                </div>
+
+                <div class="form-group">
+                    <button class="btn btn-info upload-button" type="submit" value="Upload">
+                        <span class="glyphicon glyphicon-upload" aria-hidden="true"></span> Upload
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="data-panel-wrapper">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h1 class="panel-title">Uploaded data files</h1>
+        </div>
+
+        <div class="panel-body">
+            <div class="data-table-wrapper">
+                <table class="table table-striped table-hover data-table">
+                    <tr>
+                        <th>#</th>
+                        <th>filename</th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+
+                    <!--/*@thymesVar id="files" type="java.util.List<org.kduda.greedy.model.FileModel>"*/-->
+                    <tr th:each=" file, id : ${files}">
+                        <!--/*@thymesVar id="file" type="org.kduda.greedy.model.FileModel"*/-->
+                        <!--/*@thymesVar id="id" type="java.lang.String"*/-->
+                        <!--/*@thymesVar id="name" type="java.lang.String"*/-->
+
+                        <td>
+                            <span th:text="${id.count}"></span>
+                        </td>
+
+                        <td>
+                            <button class="btn btn-default">
+                                <span th:text="${file.name}"></span>
+                            </button>
+                        </td>
+
+                        <td>
+                            <a class="btn btn-success" th:href="@{'/explore/{id}'(id=${file.id})}">
+                                <span class="glyphicon glyphicon-zoom-in" aria-hidden="true"></span> Explore
+                            </a>
+                        </td>
+
+                        <td>
+                            <a class="btn btn-primary" th:href="@{'/file/{id}'(id=${file.id})}">
+                                <span class="glyphicon glyphicon-download" aria-hidden="true"></span> Download
+                            </a>
+                        </td>
+
+                        <td>
+                            <form action="#" th:action="@{'/file/{id}'(id=${file.id})}" th:method="delete">
+                                <input type="hidden" name="_method" value="delete"/>
+                                <button class="btn btn-danger" type="submit" id="submitButton">
+                                    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <script th:replace="fragments/bootstrap :: bootstrap-js"></script>
+    <script th:src="@{/scripts/index.js}"></script>
+</footer>
+
+</body>
+</html>
