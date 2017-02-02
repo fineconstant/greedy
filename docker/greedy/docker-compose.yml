@@ -17,23 +17,3 @@ services:
     image: mongo:latest
     ports:
       - 27017:27017
-
-
-# https://hub.docker.com/r/singularities/spark/
-#  master:
-#    image: singularities/spark
-#    command: start-spark master
-#    hostname: master
-#    ports:
-#      - "6066:6066"   # Spark REST
-#      - "7070:7070"   # Spark Master
-#      - "8081:8080"   # Spark Web to 8081
-#      - "50070:50070" # Hadoop NameNode
-#  worker:
-#    image: singularities/spark
-#    command: start-spark worker master
-#    environment:
-#      SPARK_WORKER_CORES: 2
-#      SPARK_WORKER_MEMORY: 4g
-#    links:
-#      - master
