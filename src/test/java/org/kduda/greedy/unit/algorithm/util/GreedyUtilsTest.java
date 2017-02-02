@@ -5,6 +5,7 @@ import org.apache.spark.sql.Row;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.kduda.greedy.algorithm.util.ArrayBufferHelperFactory;
 import org.kduda.greedy.algorithm.util.GreedyUtils;
 import org.kduda.greedy.spark.reader.csv.SparkCsvReader;
 import org.kduda.greedy.unit.SpringUnitTest;
@@ -80,7 +81,7 @@ public class GreedyUtilsTest extends SpringUnitTest {
 	@Test
 	public void shouldCalculateSupportGreaterThanOne() {
 		@SuppressWarnings("unchecked")
-		Tuple2<String, String>[] decisionRule = new Tuple2[]{new Tuple2<>("f3", "0"),new Tuple2<>("f2", "0")};
+		Tuple2<String, String>[] decisionRule = new Tuple2[]{new Tuple2<>("f3", "0"), new Tuple2<>("f2", "0")};
 
 		scala.collection.immutable.List<Tuple2<String, String>> result =
 			GreedyUtils.calculateSupport(data, ArrayBufferHelperFactory.of(decisionRule));

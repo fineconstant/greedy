@@ -1,4 +1,4 @@
-package org.kduda.greedy.unit.algorithm.util
+package org.kduda.greedy.algorithm.util
 
 import scala.collection.mutable.ArrayBuffer
 
