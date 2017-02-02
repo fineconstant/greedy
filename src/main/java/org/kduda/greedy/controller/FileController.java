@@ -16,7 +16,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class FileController {
 
 	private final FileRepository fileRepository;
-
 	private final RulesRepository rulesRepository;
 
 	public FileController(FileRepository fileRepository, RulesRepository rulesRepository) {

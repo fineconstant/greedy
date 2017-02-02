@@ -66,6 +66,8 @@
                     </tr>
 
                     <!--/*@thymesVar id="files" type="java.util.List<org.kduda.greedy.model.FileModel>"*/-->
+                    <!--/*@thymesVar id="name" type="java.lang.String"*/-->
+                    <!--/*@thymesVar id="id" type="java.lang.Integer"*/-->
                     <tr th:each=" file, id : ${files}">
                         <td>
                             <span th:text="${id.count}"></span>

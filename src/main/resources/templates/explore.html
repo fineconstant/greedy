@@ -28,8 +28,9 @@
         </div>
 
         <div class="panel-body">
-            <form class="form">
-
+            <!--/*@thymesVar id="dataFile" type="org.kduda.greedy.model.FileModel"*/-->
+            <!--/*@thymesVar id="id" type="java.lang.Integer"*/-->
+            <form class="form" method="POST" th:action="@{'/explore/{id}'(id=${dataFile.id})}">
                 <div class="row radio-labels">
                     <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">Heuristics type:</div>
                     <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">Treat data as:</div>
@@ -38,7 +39,7 @@
                     <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
                         <div class="radio">
                             <label>
-                                <input type="radio" name="heuristicsRadios" id="heuristicsRadiosM" value="m"
+                                <input type="radio" name="heuristics" id="heuristicsRadiosM" value="m"
                                        checked="true"/>
                                 Heuristics M
                             </label>
@@ -47,7 +48,7 @@
                     <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
                         <div class="radio">
                             <label>
-                                <input type="radio" name="typeRadios" id="typeRadiosDt" value="dt" checked="true"/>
+                                <input type="radio" name="type" id="typeRadiosDt" value="dt" checked="true"/>
                                 Decision table
                             </label>
                         </div>
@@ -62,7 +63,7 @@
                     <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
                         <div class="radio">
                             <label>
-                                <input type="radio" name="heuristicsRadios" id="heuristicsRadiosRM" value="rm"/>
+                                <input type="radio" name="heuristics" id="heuristicsRadiosRM" value="rm"/>
                                 Heuristics RM
                             </label>
                         </div>
@@ -70,7 +71,7 @@
                     <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
                         <div class="radio">
                             <label>
-                                <input type="radio" name="typeRadios" id="typeRadiosIs" value="is"/>
+                                <input type="radio" name="type" id="typeRadiosIs" value="is"/>
                                 Information system
                             </label>
                         </div>
@@ -80,7 +81,7 @@
                     <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
                         <div class="radio">
                             <label>
-                                <input type="radio" name="heuristicsRadios" id="heuristicsRadiosMaxCov" value="maxCov"/>
+                                <input type="radio" name="heuristics" id="heuristicsRadiosMaxCov" value="maxCov"/>
                                 Heuristics maxCov
                             </label>
                         </div>
@@ -90,7 +91,7 @@
                     <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
                         <div class="radio">
                             <label>
-                                <input type="radio" name="heuristicsRadios" id="heuristicsRadiosPoly" value="poly"/>
+                                <input type="radio" name="heuristics" id="heuristicsRadiosPoly" value="poly"/>
                                 Heuristics poly
                             </label>
                         </div>
@@ -100,68 +101,12 @@
                     <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
                         <div class="radio">
                             <label>
-                                <input type="radio" name="heuristicsRadios" id="heuristicsRadiosLog" value="log"/>
+                                <input type="radio" name="heuristics" id="heuristicsRadiosLog" value="log"/>
                                 Heuristics log
                             </label>
                         </div>
                     </div>
                 </div>
-
-
-                <div class="form-group heuristicsRadios">
-                    <!--<div class="radio">-->
-                    <!--<label>-->
-                    <!--<input type="radio" name="heuristicsRadios" id="heuristicsRadiosM" value="m"-->
-                    <!--checked="true"/>-->
-                    <!--Heuristics M-->
-                    <!--</label>-->
-                    <!--</div>-->
-                    <!--<div class="radio">-->
-                    <!--<label>-->
-                    <!--<input type="radio" name="heuristicsRadios" id="heuristicsRadiosRM" value="rm"/>-->
-                    <!--Heuristics RM-->
-                    <!--</label>-->
-                    <!--</div>-->
-                    <!--<div class="radio">-->
-                    <!--<label>-->
-                    <!--<input type="radio" name="heuristicsRadios" id="heuristicsRadiosMaxCov" value="maxCov"/>-->
-                    <!--Heuristics maxCov-->
-                    <!--</label>-->
-                    <!--</div>-->
-                    <!--<div class="radio">-->
-                    <!--<label>-->
-                    <!--<input type="radio" name="heuristicsRadios" id="heuristicsRadiosPoly" value="poly"/>-->
-                    <!--Heuristics poly-->
-                    <!--</label>-->
-                    <!--</div>-->
-                    <!--<div class="radio">-->
-                    <!--<label>-->
-                    <!--<input type="radio" name="heuristicsRadios" id="heuristicsRadiosLog" value="log"/>-->
-                    <!--Heuristics log-->
-                    <!--</label>-->
-                    <!--</div>-->
-                </div>
-
-                <div class="form-group typeRadios">
-                    <!--<div class="radio">-->
-                    <!--<label>-->
-                    <!--<input type="radio" name="typeRadios" id="typeRadiosDt" value="dt" checked="true"/>-->
-                    <!--Decision table-->
-                    <!--</label>-->
-                    <!--</div>-->
-                    <!--<div class="radio">-->
-                    <!--<label>-->
-                    <!--<input type="radio" name="typeRadios" id="typeRadiosIs" value="is"/>-->
-                    <!--Information system-->
-                    <!--</label>-->
-                    <!--</div>-->
-                </div>
-
-
-                <!--<button type="submit" class="btn btn-success">-->
-                    <!--<span class="glyphicon glyphicon-tasks"></span> Explore data-->
-                <!--</button>-->
-
             </form>
         </div>
     </div>
