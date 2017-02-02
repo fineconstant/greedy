@@ -3,5 +3,13 @@
 }
 
 .upload-button {
-    width: 200%;
+    width: 100%;
+}
+
+.panel-title {
+    font-size: 1.5em;
+}
+
+.btn {
+    font-weight: bold;
 }

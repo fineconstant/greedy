@@ -26,16 +26,22 @@
         </div>
 
         <div class="panel-body">
-            <form class="form-inline" method="POST" enctype="multipart/form-data" action="/file">
-                <div class="form-group">
-                    <label for="file-input">File</label>
-                    <input class="file-input" id="file-input" type="file" name="file"/>
-                </div>
-
-                <div class="form-group">
-                    <button class="btn btn-info upload-button" type="submit" value="Upload">
-                        <span class="glyphicon glyphicon-upload" aria-hidden="true"></span> Upload
-                    </button>
+            <form class="form" method="POST" enctype="multipart/form-data" action="/file">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="file-input">File</label>
+                            <input class="file-input" id="file-input" type="file" name="file"/>
+                        </div>
+                    </div>
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <button class="btn btn-info upload-button" type="submit" value="Upload">
+                                <span class="glyphicon glyphicon-floppy-open" aria-hidden="true"></span> Upload
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </form>
         </div>
@@ -61,10 +67,6 @@
 
                     <!--/*@thymesVar id="files" type="java.util.List<org.kduda.greedy.model.FileModel>"*/-->
                     <tr th:each=" file, id : ${files}">
-                        <!--/*@thymesVar id="file" type="org.kduda.greedy.model.FileModel"*/-->
-                        <!--/*@thymesVar id="id" type="java.lang.String"*/-->
-                        <!--/*@thymesVar id="name" type="java.lang.String"*/-->
-
                         <td>
                             <span th:text="${id.count}"></span>
                         </td>
@@ -77,13 +79,13 @@
 
                         <td>
                             <a class="btn btn-success" th:href="@{'/explore/{id}'(id=${file.id})}">
-                                <span class="glyphicon glyphicon-zoom-in" aria-hidden="true"></span> Explore
+                                <span class="glyphicon glyphicon-tasks" aria-hidden="true"></span> Explore
                             </a>
                         </td>
 
                         <td>
                             <a class="btn btn-primary" th:href="@{'/file/{id}'(id=${file.id})}">
-                                <span class="glyphicon glyphicon-download" aria-hidden="true"></span> Download
+                                <span class="glyphicon glyphicon-floppy-save" aria-hidden="true"></span> Download
                             </a>
                         </td>
 

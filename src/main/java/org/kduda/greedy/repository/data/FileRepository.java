@@ -15,6 +15,8 @@ public interface FileRepository {
 
 	List<FileModel> listAll();
 
+	FileModel listById(String id);
+
 	Pair<String, Resource> loadResourceById(String id);
 
 	Pair<String, Resource> loadResourceByFilename(String filename);

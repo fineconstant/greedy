@@ -3,27 +3,222 @@
 <head>
     <title>Greedy algorithms - data exploration</title>
     <link th:replace="fragments/bootstrap :: bootstrap-css"/>
-    <!--<link rel="stylesheet" th:href="@{/styles/index.css}"/>-->
+    <link rel="stylesheet" th:href="@{/styles/explore.css}"/>
 </head>
 
 <body class="container">
 <div class="header" th:include="fragments/header :: explorationHeader"></div>
 
-<!--<div class="messages-wrapper">-->
-    <!--&lt;!&ndash;/*@thymesVar id="message" type="java.lang.String"*/&ndash;&gt;-->
-    <!--<div th:if="${message}" class="alert alert-info alert-dismissible" role="alert">-->
-        <!--<button type="button" class="close" data-dismiss="alert" aria-label="Close">-->
-            <!--<span aria-hidden="true">&times;</span>-->
-        <!--</button>-->
-        <!--<div th:text="${message}"></div>-->
-    <!--</div>-->
-<!--</div>-->
+<div class="explore-panel-wrapper">
+    <div class="panel panel-default">
+        <div class="panel-heading">
 
-explore
+            <div class="row">
+                <div class="col-sm-6">
+                    <!--/*@thymesVar id="dataFile" type="org.kduda.greedy.model.FileModel"*/-->
+                    <h1 class="panel-title" th:text="${dataFile.name}"></h1>
+                </div>
+                <div class="col-sm-4"></div>
+                <div class="col-sm-2">
+                    <a href="/" class="btn btn-info btn-back">
+                        <span class="glyphicon glyphicon-home" aria-hidden="true"></span> Back
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel-body">
+            <form class="form">
+
+                <div class="row radio-labels">
+                    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">Heuristics type:</div>
+                    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">Treat data as:</div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="heuristicsRadios" id="heuristicsRadiosM" value="m"
+                                       checked="true"/>
+                                Heuristics M
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="typeRadios" id="typeRadiosDt" value="dt" checked="true"/>
+                                Decision table
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                        <button type="submit" class="btn btn-success btn-explore">
+                            <span class="glyphicon glyphicon-tasks"></span> Explore data
+                        </button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="heuristicsRadios" id="heuristicsRadiosRM" value="rm"/>
+                                Heuristics RM
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="typeRadios" id="typeRadiosIs" value="is"/>
+                                Information system
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="heuristicsRadios" id="heuristicsRadiosMaxCov" value="maxCov"/>
+                                Heuristics maxCov
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="heuristicsRadios" id="heuristicsRadiosPoly" value="poly"/>
+                                Heuristics poly
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="heuristicsRadios" id="heuristicsRadiosLog" value="log"/>
+                                Heuristics log
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="form-group heuristicsRadios">
+                    <!--<div class="radio">-->
+                    <!--<label>-->
+                    <!--<input type="radio" name="heuristicsRadios" id="heuristicsRadiosM" value="m"-->
+                    <!--checked="true"/>-->
+                    <!--Heuristics M-->
+                    <!--</label>-->
+                    <!--</div>-->
+                    <!--<div class="radio">-->
+                    <!--<label>-->
+                    <!--<input type="radio" name="heuristicsRadios" id="heuristicsRadiosRM" value="rm"/>-->
+                    <!--Heuristics RM-->
+                    <!--</label>-->
+                    <!--</div>-->
+                    <!--<div class="radio">-->
+                    <!--<label>-->
+                    <!--<input type="radio" name="heuristicsRadios" id="heuristicsRadiosMaxCov" value="maxCov"/>-->
+                    <!--Heuristics maxCov-->
+                    <!--</label>-->
+                    <!--</div>-->
+                    <!--<div class="radio">-->
+                    <!--<label>-->
+                    <!--<input type="radio" name="heuristicsRadios" id="heuristicsRadiosPoly" value="poly"/>-->
+                    <!--Heuristics poly-->
+                    <!--</label>-->
+                    <!--</div>-->
+                    <!--<div class="radio">-->
+                    <!--<label>-->
+                    <!--<input type="radio" name="heuristicsRadios" id="heuristicsRadiosLog" value="log"/>-->
+                    <!--Heuristics log-->
+                    <!--</label>-->
+                    <!--</div>-->
+                </div>
+
+                <div class="form-group typeRadios">
+                    <!--<div class="radio">-->
+                    <!--<label>-->
+                    <!--<input type="radio" name="typeRadios" id="typeRadiosDt" value="dt" checked="true"/>-->
+                    <!--Decision table-->
+                    <!--</label>-->
+                    <!--</div>-->
+                    <!--<div class="radio">-->
+                    <!--<label>-->
+                    <!--<input type="radio" name="typeRadios" id="typeRadiosIs" value="is"/>-->
+                    <!--Information system-->
+                    <!--</label>-->
+                    <!--</div>-->
+                </div>
+
+
+                <!--<button type="submit" class="btn btn-success">-->
+                    <!--<span class="glyphicon glyphicon-tasks"></span> Explore data-->
+                <!--</button>-->
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="rules-panel-wrapper">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h1 class="panel-title">Result rules files</h1>
+        </div>
+
+        <div class="panel-body">
+            <div class="rules-table-wrapper">
+                <table class="table table-striped table-hover data-table">
+                    <tr>
+                        <th>#</th>
+                        <th>filename</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+
+                    <!--/*@thymesVar id="files" type="java.util.List<org.kduda.greedy.model.FileModel>"*/-->
+                    <tr th:each=" file, id : ${files}">
+                        <td>
+                            <span th:text="${id.count}"></span>
+                        </td>
+
+                        <td>
+                            <button class="btn btn-default">
+                                <span th:text="${file.name}"></span>
+                            </button>
+                        </td>
+
+                        <td>
+                            <a class="btn btn-primary" th:href="@{'/file/{id}'(id=${file.id})}">
+                                <span class="glyphicon glyphicon-floppy-save" aria-hidden="true"></span> Download
+                            </a>
+                        </td>
+
+                        <td>
+                            <form action="#" th:action="@{'/file/{id}'(id=${file.id})}" th:method="delete">
+                                <input type="hidden" name="_method" value="delete"/>
+                                <button class="btn btn-danger" type="submit" id="submitButton">
+                                    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
 
 <footer>
     <script th:replace="fragments/bootstrap :: bootstrap-js"></script>
-    <!--<script th:src="@{/scripts/index.js}"></script>-->
+    <!--<script th:src="@{/scripts/explore.js}"></script>-->
 </footer>
 
 </body>

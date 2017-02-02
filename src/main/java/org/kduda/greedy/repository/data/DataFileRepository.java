@@ -54,6 +54,13 @@ public class DataFileRepository implements FileRepository {
 	}
 
 	@Override
+	public FileModel listById(String id) {
+		return storageService.findFileById(id)
+							 .map(file -> new FileModel(file.getFilename(), file.getId().toString()))
+							 .get();
+	}
+
+	@Override
 	public Pair<String, Resource> loadResourceById(@NonNull String id) {
 		Optional<GridFSDBFile> oFile = storageService.findFileById(id);
 		return RepositoryUtils.loadAsResource(oFile);

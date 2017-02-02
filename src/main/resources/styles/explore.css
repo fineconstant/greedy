@@ -1,0 +1,13 @@
+.btn-back, .btn-explore {
+    width: 100%;
+    font-weight: bold;
+}
+
+.panel-title {
+    font-size: 1.5em;
+}
+
+.radio-labels {
+    font-weight: bold;
+    font-size: 1.3em;
+}
