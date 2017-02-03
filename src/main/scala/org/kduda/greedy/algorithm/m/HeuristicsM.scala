@@ -4,6 +4,7 @@ import org.apache.spark.sql.DataFrame
 import org.kduda.greedy.algorithm.util.GreedyUtils
 import org.kduda.greedy.spark.generic.SparkAware
 
+import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
 
 object HeuristicsM extends SparkAware {
@@ -11,7 +12,7 @@ object HeuristicsM extends SparkAware {
   def calculateDecisionRules(dts: Map[String, DataFrame]): Map[String, List[List[(String, String)]]] = {
     dts.map {
       case (key, dt) =>
-        val result: ArrayBuffer[List[(String, String)]] = ArrayBuffer.empty
+        val result = mutable.HashSet.empty[ArrayBuffer[(String, String)]]
         dt.cache()
 
         val ALL_COLUMNS = dt.columns
@@ -75,13 +76,15 @@ object HeuristicsM extends SparkAware {
             }
             while (distinctDecisions > 1)
 
-            val resultWithSupport = GreedyUtils.calculateSupport(dtRowsMaster, decisionRule)
             dtRows = dtRowsMaster
 
-            result += resultWithSupport
+            result += decisionRule
           }
 
-          (key, result.toList)
+          val resultWithSupport = result.map(rule => GreedyUtils.calculateSupport(dtRowsMaster, rule))
+                                  .toList
+
+          (key, resultWithSupport)
         }
     }
   }
