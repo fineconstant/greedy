@@ -132,12 +132,12 @@ public class DataExplorationService implements ExplorationService {
 	}
 
 	private void persist(String rulesString, String fileName, ExploreRequestModel exploreDetails, String id) {
-		log.info("Persisting in database " + fileName + "with id = " + id);
+		log.info("Persisting in database file with id = " + id);
 		String dataType = exploreDetails.getType();
 		String finalName = fileName + "-" + dataType + "-rules-" + heuristics + fileFormat;
 		InputStream stream = IOUtils.toInputStream(rulesString, StandardCharsets.UTF_8);
 
 		rulesRepository.store(stream, finalName, id, contentType);
-		log.info(fileName + " persisted in database");
+		log.info("File with id = " + id + " persisted in database");
 	}
 }
