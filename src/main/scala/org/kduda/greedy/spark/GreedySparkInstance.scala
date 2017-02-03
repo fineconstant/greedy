@@ -10,6 +10,9 @@ object GreedySparkInstance {
 
   private val appName = config.getString("greedy.spark.appName")
   private val master = config.getString("greedy.spark.master")
+  private val serializer = config.getString("spark.serializer")
+  private val kryoBufferMax = config.getString("spark.kryoserializer.buffer.max")
+  private val parallelism = config.getString("spark.default.parallelism")
 
   val sparkSession: SparkSession = SparkSession.builder()
     .appName(appName)
@@ -17,6 +20,9 @@ object GreedySparkInstance {
     .config("spark.mongodb.output.database", "greedy")
     .config("spark.mongodb.output.collection", "spark-test")
     .config("spark.sql.warehouse.dir", "tmp-storage")
+    .config("spark.serializer", serializer)
+    .config("spark.kryoserializer.buffer.max", kryoBufferMax)
+    .config("spark.default.parallelism", parallelism)
     .getOrCreate()
 
   val sc: SparkContext = sparkSession.sparkContext
