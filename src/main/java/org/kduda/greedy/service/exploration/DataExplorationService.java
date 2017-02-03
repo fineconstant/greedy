@@ -55,7 +55,7 @@ public class DataExplorationService implements ExplorationService {
 
 		String rulesString = buildStringOutput(rules, exploreDetails);
 
-		persist(rulesString, fileName, id);
+		persist(rulesString, fileName, exploreDetails, id);
 	}
 
 	private String getFileName(String id) {
@@ -116,8 +116,9 @@ public class DataExplorationService implements ExplorationService {
 		}
 	}
 
-	private void persist(String rulesString, String fileName, String id) {
-		String finalName = fileName + "-rules-" + heuristics + fileFormat;
+	private void persist(String rulesString, String fileName, ExploreRequestModel exploreDetails, String id) {
+		String dataType = exploreDetails.getType();
+		String finalName = fileName + "-" + dataType + "-rules-" + heuristics + fileFormat;
 		InputStream stream = IOUtils.toInputStream(rulesString, StandardCharsets.UTF_8);
 
 		rulesRepository.store(stream, finalName, id, contentType);
