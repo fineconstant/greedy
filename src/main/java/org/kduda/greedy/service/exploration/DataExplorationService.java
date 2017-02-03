@@ -1,5 +1,6 @@
 package org.kduda.greedy.service.exploration;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
@@ -24,6 +25,7 @@ import scala.collection.immutable.Map;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
+@Slf4j
 @Service
 public class DataExplorationService implements ExplorationService {
 
@@ -43,12 +45,16 @@ public class DataExplorationService implements ExplorationService {
 
 	@Override
 	public void exploreAndSave(String id, ExploreRequestModel exploreDetails) {
+		log.info("Exploring data with id = " + id);
 		String fileName = getFileName(id);
+		log.info("Constructed filename = " + fileName);
 		Dataset<Row> csv = sparkMongo.readCsvById(id);
 
 		Dataset<Row>[] dts = prepareData(csv, exploreDetails);
 
+		log.info("Removing inconsistencies with MCD");
 		Dataset<Row>[] dtsConsistent = DecisionTableFactory.removeInconsistenciesMCD(dts);
+		log.info("Creating map");
 		Map<String, Dataset<Row>> dtsMapped = DecisionTableFactory.createMapOf(dtsConsistent);
 
 		Map<String, List<List<Tuple2<String, String>>>> rules = exploreWithHeuristics(dtsMapped, exploreDetails);
@@ -56,6 +62,7 @@ public class DataExplorationService implements ExplorationService {
 		String rulesString = buildStringOutput(rules, exploreDetails);
 
 		persist(rulesString, fileName, exploreDetails, id);
+		log.info("Job complete!");
 	}
 
 	private String getFileName(String id) {
@@ -64,6 +71,7 @@ public class DataExplorationService implements ExplorationService {
 	}
 
 	private Dataset<Row>[] prepareData(Dataset<Row> csv, ExploreRequestModel exploreDetails) {
+		log.info("Preparing data");
 		Dataset<Row>[] dt;
 
 		if ("is".equals(exploreDetails.getType()))
@@ -79,27 +87,34 @@ public class DataExplorationService implements ExplorationService {
 																				  ExploreRequestModel exploreDetails) {
 		switch (exploreDetails.getHeuristics()) {
 			case "m":
+				log.info("Exploring with heuristics m");
 				heuristics = "m";
 				return HeuristicsM.calculateDecisionRules(dtsMapped);
 			case "rm":
+				log.info("Exploring with heuristics rm");
 				heuristics = "rm";
 				return HeuristicsRM.calculateDecisionRules(dtsMapped);
 			case "maxCov":
+				log.info("Exploring with heuristics maxCov");
 				heuristics = "maxCov";
 				return HeuristicsMaxCov.calculateDecisionRules(dtsMapped);
 			case "poly":
+				log.info("Exploring with heuristics poly");
 				heuristics = "poly";
 				return HeuristicsPoly.calculateDecisionRules(dtsMapped);
 			case "log":
+				log.info("Exploring with heuristics log");
 				heuristics = "log";
 				return HeuristicsLog.calculateDecisionRules(dtsMapped);
 			default:
+				log.info("Exploring with DEFAULT heuristics m");
 				heuristics = "m";
 				return HeuristicsM.calculateDecisionRules(dtsMapped);
 		}
 	}
 
 	private String buildStringOutput(Map<String, List<List<Tuple2<String, String>>>> rules, ExploreRequestModel exploreDetails) {
+		log.info("Building string output " + exploreDetails.getOutput());
 		switch (exploreDetails.getOutput()) {
 			case "csv":
 				fileFormat = ".csv";
@@ -117,10 +132,12 @@ public class DataExplorationService implements ExplorationService {
 	}
 
 	private void persist(String rulesString, String fileName, ExploreRequestModel exploreDetails, String id) {
+		log.info("Persisting in database " + fileName + "with id = " + id);
 		String dataType = exploreDetails.getType();
 		String finalName = fileName + "-" + dataType + "-rules-" + heuristics + fileFormat;
 		InputStream stream = IOUtils.toInputStream(rulesString, StandardCharsets.UTF_8);
 
 		rulesRepository.store(stream, finalName, id, contentType);
+		log.info(fileName + " persisted in database");
 	}
 }
