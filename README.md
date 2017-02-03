@@ -11,9 +11,9 @@
   * Restart application
 
 #### Test coverage:
-* Class: 90%
+* Class: 91%
 * Method 74%
-* Line 72%
+* Line 73%
 
 #### To do:
 * [Lombok](https://projectlombok.org/features/index.html) `val` with IntelliJ
