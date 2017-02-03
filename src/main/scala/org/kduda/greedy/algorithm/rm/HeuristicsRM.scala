@@ -23,8 +23,8 @@ object HeuristicsRM extends DecisionRulesCalculator with SparkAware {
         if (dt.select(DECISION_COLUMN).distinct().count() <= 1)
           (key, List.empty[List[(String, String)]])
         else {
-
-          var dtRows = dt.collect()
+          val dtRowsMaster = dt.collect()
+          var dtRows = dtRowsMaster
 
           // calculating decision rule for each row
           for (dtRow <- dtRows) {
@@ -77,7 +77,8 @@ object HeuristicsRM extends DecisionRulesCalculator with SparkAware {
             }
             while (distinctDecisions > 1)
 
-            val resultWithSupport = GreedyUtils.calculateSupport(dtRows, decisionRule)
+            val resultWithSupport = GreedyUtils.calculateSupport(dtRowsMaster, decisionRule)
+            dtRows = dtRowsMaster
 
             result += resultWithSupport
           }
