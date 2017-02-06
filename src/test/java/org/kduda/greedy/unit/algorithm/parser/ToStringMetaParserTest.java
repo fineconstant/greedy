@@ -25,7 +25,7 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ToStringParserTest extends SpringUnitTest {
+public class ToStringMetaParserTest extends SpringUnitTest {
 
 	@Autowired private SparkCsvReader sparkCsvReader;
 
@@ -34,7 +34,7 @@ public class ToStringParserTest extends SpringUnitTest {
 	@SuppressWarnings("Duplicates")
 	@Before
 	public void setUp() throws IOException {
-		ClassPathResource resource = new ClassPathResource("/files/paper-sample.csv", getClass());
+		ClassPathResource resource = new ClassPathResource("/files/complex-sample.csv", getClass());
 		File file = new File(resource.getURL().getPath());
 
 		Map<String, String> options = new HashMap<>();
@@ -51,30 +51,17 @@ public class ToStringParserTest extends SpringUnitTest {
 		dtsMapped = null;
 	}
 
+
 	@Test
-	public void shouldBuildStringRSES() throws IOException {
+	public void shouldBuildStringCSVWithMetadata() throws IOException {
 		scala.collection.immutable.Map<String, List<List<Tuple2<String, String>>>> rules = HeuristicsM.calculateDecisionRules(dtsMapped);
 
-		String actual = ToStringParser.buildStringRSES(rules);
+		String actual = ToStringParser.buildStringCSVWithMeta(rules);
 
-		ClassPathResource resource = new ClassPathResource("/files/paper-sample-rules.rul", getClass());
+		ClassPathResource resource = new ClassPathResource("/files/complex-sample-rules-with-meta.csv", getClass());
 		byte[] encoded = Files.readAllBytes(Paths.get(resource.getURI()));
 		String expected = new String(encoded, StandardCharsets.UTF_8);
 
 		assertThat(actual).isEqualTo(expected);
 	}
-
-	@Test
-	public void shouldBuildStringCSV() throws IOException {
-		scala.collection.immutable.Map<String, List<List<Tuple2<String, String>>>> rules = HeuristicsM.calculateDecisionRules(dtsMapped);
-
-		String actual = ToStringParser.buildStringCSV(rules);
-
-		ClassPathResource resource = new ClassPathResource("/files/paper-sample-rules.csv", getClass());
-		byte[] encoded = Files.readAllBytes(Paths.get(resource.getURI()));
-		String expected = new String(encoded, StandardCharsets.UTF_8);
-
-		assertThat(actual).isEqualTo(expected);
-	}
-
 }
