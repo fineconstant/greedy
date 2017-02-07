@@ -124,6 +124,10 @@ public class DataExplorationService implements ExplorationService {
 				fileFormat = ".rul";
 				contentType = FileContentTypes.RSES.getType();
 				return ToStringParser.buildStringRSES(rules);
+			case "csvm":
+				fileFormat = "-wmetadata.csv";
+				contentType = FileContentTypes.CSV.getType();
+				return ToStringParser.buildStringCSVWithMeta(rules);
 			default:
 				fileFormat = ".csv";
 				contentType = FileContentTypes.CSV.getType();
