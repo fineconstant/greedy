@@ -55,10 +55,11 @@ object ToStringParser {
         }
 
         builder.append(s"$counter,")
-        builder.append(formatted.mkString(" & "))
+        builder.append(formatted.mkString(""))
 
         builder.append(" -> ")
-        builder.append(s"$decision\n")
+        builder.append(s"$decision,")
+        builder.append(s"${conditions.length}\n")
 
         counter += 1
       }
