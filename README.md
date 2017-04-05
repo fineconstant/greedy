@@ -1,4 +1,4 @@
-##Greedy algorithms implementation
+## Greedy algorithms implementation
 
 #### Development
 * To enable Spring Boot Live Reload for Scala in IntelliJ:
