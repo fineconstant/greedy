@@ -1,6 +1,6 @@
 ## Greedy algorithms implementation
 
-### WARNING! This is not a good implementation, it is not efficient and contains a lot of really bad code!
+### WARNING! This is not a good implementation, it contains a lot of really bad code and uses Spark in a very unefficient way.
 
 #### Development
 * To enable Spring Boot Live Reload for Scala in IntelliJ:
