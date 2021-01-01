@@ -1,5 +1,7 @@
 ## Greedy algorithms implementation
 
+### WARNING! This is not a good implementation, it is not efficient and contains a lot of really bad code!
+
 #### Development
 * To enable Spring Boot Live Reload for Scala in IntelliJ:
   * Go to `Setting` -> `Build, Executions, Deplyment` -> `Compiler` -> enable `Build projects automatically`
